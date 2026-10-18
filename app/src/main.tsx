@@ -1,30 +1,16 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRootRoute, createRoute, createRouter, RouterProvider } from "@tanstack/react-router";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import { cardRoute } from "./routes/card/route";
+import { cardsRoute } from "./routes/cards/route";
+import { homeRoute } from "./routes/home/route";
+import { rootRoute } from "./routes/root";
 
-const rootRoute = createRootRoute();
+const routeTree = rootRoute.addChildren([homeRoute, cardsRoute, cardRoute]);
 
-const routeTree = rootRoute.addChildren([
-  createRoute({
-    getParentRoute: () => rootRoute,
-    path: "/",
-    component: () => <main data-testid="page-home" />,
-  }),
-  createRoute({
-    getParentRoute: () => rootRoute,
-    path: "/cards",
-    component: () => <main data-testid="page-cards" />,
-  }),
-  createRoute({
-    getParentRoute: () => rootRoute,
-    path: "/card/$id",
-    component: () => <main data-testid="page-card" />,
-  }),
-]);
-
-const router = createRouter({ routeTree, defaultViewTransition: true });
+const router = createRouter({ routeTree, defaultViewTransition: true, scrollRestoration: true });
 
 declare module "@tanstack/react-router" {
   interface Register {

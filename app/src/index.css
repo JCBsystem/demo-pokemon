@@ -1,1 +1,166 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: Nunito, system-ui, sans-serif;
+  --font-display: Fredoka, Nunito, sans-serif;
+
+  --color-cover: #b4412b;
+  --color-cover-dark: #8f3220;
+  --color-paper: #fff8ec;
+  --color-ink: #3a2a20;
+  --color-muted: #766252;
+  --color-sun: #f2b632;
+  --color-teal: #7cc3b6;
+  --color-sky: #9db7e8;
+  --color-sand: #f4e6cf;
+  --color-line: #e3d3b6;
+  --color-pocket: #efe3cc;
+  --color-strip: #fff1dc;
+  --color-heart: #e0413a;
+  --color-legal: #3a8444;
+
+  --color-type-grass: #5aa84a;
+  --color-type-colorless: #cfc6b4;
+  --color-type-water: #3d8fd6;
+  --color-type-psychic: #a65fb8;
+  --color-type-fighting: #b5653a;
+  --color-type-lightning: #f2c230;
+  --color-type-fire: #e8603c;
+  --color-type-darkness: #3b3a48;
+  --color-type-metal: #8c96a3;
+  --color-type-dragon: #7a6a2e;
+  --color-type-fairy: #e58bb5;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  body {
+    @apply min-h-screen bg-sand pb-28 font-sans text-ink lg:pb-10;
+  }
+}
+
+@layer components {
+  .cover {
+    @apply relative rounded-[26px] bg-cover p-2.5 shadow-[0_18px_40px_-18px_#6b2a1a,inset_0_0_0_4px_var(--color-cover-dark)];
+  }
+  .cover::before {
+    content: "";
+    @apply pointer-events-none absolute inset-[5px] rounded-[22px] border-2 border-dashed border-[#f7c9a8aa];
+  }
+  .paper {
+    @apply relative rounded-2xl bg-paper p-3.5 bg-[radial-gradient(#e9dcc4_1px,transparent_1px)] bg-[length:14px_14px];
+  }
+  .pocket {
+    @apply relative block aspect-[5/7] overflow-hidden rounded-lg bg-pocket shadow-[inset_0_0_0_1px_#d9c7a6,0_1px_0_#fff];
+  }
+  .pocket::after {
+    content: "";
+    @apply pointer-events-none absolute inset-0;
+    background:
+      linear-gradient(125deg, #ffffff66 0%, #ffffff11 28%, transparent 40%),
+      linear-gradient(#ffffffaa, #ffffffaa) top/100% 3px no-repeat;
+  }
+  .pocket-empty {
+    @apply aspect-[5/7] rounded-lg shadow-[inset_0_0_0_2px_#e0cfae];
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-white px-[11px] py-[5px] text-[13px] font-bold shadow-[inset_0_0_0_1px_var(--color-line)] outline-none;
+  }
+  .chip[data-focus-visible],
+  .chip:focus-visible {
+    @apply ring-2 ring-ink ring-offset-2 ring-offset-paper;
+  }
+  .chip-on {
+    @apply bg-ink text-white;
+  }
+  .chip b {
+    @apply font-bold text-muted;
+  }
+  .chip-on b {
+    @apply text-[#e9d9bd];
+  }
+  .dot {
+    @apply inline-block size-2.5 flex-none rounded-full;
+  }
+  .navon {
+    @apply bg-ink! text-white!;
+  }
+  .rings {
+    @apply pointer-events-none absolute inset-y-[8%] left-1/2 z-[5] hidden -translate-x-1/2 flex-col justify-between lg:flex;
+  }
+  .rings > span {
+    @apply h-3.5 w-[30px] rounded-full bg-[linear-gradient(#e6e6e6,#9a9a9a)] shadow-[0_2px_3px_#0005];
+  }
+}
+
+@keyframes splash-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .splash-shimmer {
+    background: linear-gradient(100deg, transparent 30%, #ffffffaa 50%, transparent 70%) 0 0 / 200%
+      100%;
+    animation: splash-shimmer 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes page-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+@keyframes page-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes page-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes page-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+}
+::view-transition-group(card-hero) {
+  animation-duration: 320ms;
+}
+:root:active-view-transition-type(turn-forward)::view-transition-old(binder-page) {
+  animation: page-out-left 260ms ease-out both;
+}
+:root:active-view-transition-type(turn-forward)::view-transition-new(binder-page) {
+  animation: page-in-right 260ms ease-out both;
+}
+:root:active-view-transition-type(turn-back)::view-transition-old(binder-page) {
+  animation: page-out-right 260ms ease-out both;
+}
+:root:active-view-transition-type(turn-back)::view-transition-new(binder-page) {
+  animation: page-in-left 260ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
