@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+@theme {
+  --color-canvas: #f6f5f2;
+  --color-accent: var(--color-indigo-600);
+
+  --animate-fade-in: fade-in 150ms ease-out;
+  --animate-fade-out: fade-in 150ms ease-in reverse;
+  --animate-drawer-in: drawer-in 200ms ease-out;
+  --animate-drawer-out: drawer-in 150ms ease-in reverse;
+  --animate-sheet-in: sheet-in 200ms ease-out;
+  --animate-sheet-out: sheet-in 150ms ease-in reverse;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes drawer-in {
+    from {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 3.5rem;
+  }
+
+  body {
+    background: var(--color-canvas);
+    @apply text-sm text-zinc-800 antialiased;
+  }
+
+  :focus-visible,
+  [data-focus-visible] {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@utility content-auto {
+  content-visibility: auto;
+  contain-intrinsic-block-size: auto 52px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
