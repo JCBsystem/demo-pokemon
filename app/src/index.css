@@ -1,1 +1,123 @@
 @import "tailwindcss";
+
+/* Self-hosted latin subsets (SIL OFL, see /fonts/OFL-*.txt) so first paint needs no third party. */
+@font-face {
+  font-family: "Fraunces";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/fraunces.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fraunces";
+  font-style: italic;
+  font-weight: 300 500;
+  font-display: swap;
+  src: url("/fonts/fraunces-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/instrument-sans.woff2") format("woff2");
+}
+
+@theme {
+  --color-paper: #f6f3ec;
+  --color-ink: #1c1b18;
+  --color-mute: #6f695d;
+  --color-rule: #dcd5c6;
+  --color-wash: #ece6d9;
+  --color-accent: #b4271c;
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Instrument Sans", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink font-sans antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+}
+
+@utility kicker {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--color-mute);
+}
+
+/* Every card image sits in a fixed 5:7 slot so nothing shifts while it loads. */
+@utility card-slot {
+  aspect-ratio: 5 / 7;
+  background-color: var(--color-wash);
+  border-radius: 4.5% / 3.2%;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.08),
+    0 14px 30px -18px rgb(0 0 0 / 0.45);
+}
+
+/* Grid items skip layout and paint while off screen; the intrinsic size keeps the scrollbar honest. */
+/* The padding keeps the focus ring, hover lift and shadow inside the contained paint box. */
+@utility grid-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 316px;
+  padding: 12px;
+  margin: -12px;
+  @media (width >= 64rem) {
+    contain-intrinsic-size: auto 426px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* Masthead title shrinks as the page scrolls; browsers without scroll timelines keep the big title. */
+@utility mast-title {
+  font-size: clamp(2.1rem, 8.6vw, 4.25rem);
+}
+
+@utility mast-kicker {
+  max-height: 2rem;
+  overflow: hidden;
+}
+
+@keyframes mast-title-shrink {
+  to {
+    font-size: 1.35rem;
+  }
+}
+
+@keyframes mast-kicker-hide {
+  to {
+    max-height: 0;
+    margin-bottom: 0;
+    opacity: 0;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .mast-title,
+  .mast-kicker {
+    animation: mast-title-shrink linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 120px;
+  }
+
+  .mast-kicker {
+    animation-name: mast-kicker-hide;
+    animation-range: 0 60px;
+  }
+}
