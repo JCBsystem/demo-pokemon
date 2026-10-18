@@ -38,3 +38,6 @@ dist-ssr
 # Playwright output
 test-results/
 playwright-report/
+
+# Firebase hosting cache
+.firebase/
