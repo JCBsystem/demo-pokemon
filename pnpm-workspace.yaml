@@ -5,7 +5,9 @@ packages:
 catalogMode: prefer
 
 catalog:
+  "@animate-ui/react": ^2.0.0
   "@types/node": ^24
+  motion: ^14.3.0
   typescript: ^7.0.2
   vite: npm:@voidzero-dev/vite-plus-core@1.3.0
   vite-plus: 1.3.0
@@ -20,3 +22,4 @@ peerDependencyRules:
 minimumReleaseAgeExclude:
   - "@tanstack/query-core@5.104.4"
   - "@tanstack/react-query@5.104.4"
+  - "@animate-ui/react@2.0.0"

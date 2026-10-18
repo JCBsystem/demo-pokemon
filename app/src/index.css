@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+@theme {
+  --color-accent: oklch(90.5% 0.182 98.111);
+  --color-fav: oklch(64.5% 0.246 16.439);
+  --color-muted: oklch(70.5% 0.015 286.067);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-zinc-950);
+  }
+
+  body {
+    @apply bg-zinc-950 pb-20 text-zinc-100 antialiased lg:pb-0;
+  }
+
+  :focus-visible,
+  [data-focus-visible] {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+@utility noscroll {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility chip {
+  @apply inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 text-sm whitespace-nowrap text-zinc-200 hover:border-zinc-600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
