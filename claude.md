@@ -1,0 +1,9 @@
+- ALWAYS: Read the code in the affected area before you answer or act. Answer from the code, not from memory.
+- ALWAYS: Keep replies short. No confirmations, no repeats, nothing off task.
+- ALWAYS: While talking with the user, wait for clear agreement before any code change. Information and questions are not instructions.
+- ALWAYS: Number every list item so the user can answer by number.
+- ALWAYS: Ask complex questions one at a time, with context and options.
+- NEVER: Assume or guess.
+- NEVER: Ask a question the codebase can answer.
+- NEVER: Commit or push without the user saying so.
+- NEVER: Add "Co-Authored-By: Claude" or any AI attribution in commits, comments, or PRs.

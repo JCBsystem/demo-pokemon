@@ -1,0 +1,54 @@
+Ash’s Pokémon Card Collection Assignment
+Ash Ketchum is probably the world’s biggest Pokémon card fan. He has been collecting
+Pokémon cards since day one. Ash has faced many Pokémon card trials and defeated
+countless rival players on his path. Now, he faces his greatest challenge ever: finding anything
+in his card collection.
+Your task is to build Ash a home for his collection: one place to start from, where he can find any
+card in seconds and keep his favourites close at hand. The collection can be found in the
+provided ash_collection.json. You are also free to use the source API directly at Pokémon
+TCG API.
+Assignment Overview
+Your goal is to build a small web app for Ash’s card collection. We are interested in how the app
+is put together and how it feels to use. You have creative freedom in how to approach this, but
+here are some feature suggestions to get started:
+Find a card fast: He remembers part of a name. How quickly can he get to the card?
+Browse: Which sets, types and rarities does he own, and what is in each?
+Look at one card: Everything about a single card on one page he can send to a friend.
+Keep favourites at hand: The cards he cares about most should be there when he opens
+the app.
+Come back later: What he searched or saved should still make sense after a reload, or
+on his phone.
+Requirements
+1. Tech:
+React and TypeScript are required
+Any other libraries and tools are up to you
+2. Deliverables:
+A homepage that works as Ash’s starting point into the collection.
+Navigation between the pages, such as a menu or tabs.
+A list or grid of the collection with search and filtering, kept in the URL so a filtered
+view can be shared as a link.
+A detail view for a single card, for example split into tabs for attacks, weaknesses
+and legalities.
+One small personal touch that survives a reload, such as pinning favourite cards to
+the homepage.
+It should work on a phone as well as a laptop, be usable from the keyboard, and
+handle loading and empty states sensibly.
+3. AI Usage:
+You are allowed to use AI coding assistants such as Claude Code and Codex to
+speed up development time. GitHub Copilot and similar assistants are fine too. The
+design must be your own. We will judge code quality so use AI responsibly.
+4. Submission:
+Share an URL to the app or use a video demo.
+Share the code using a public Git repository that includes a README with:
+Setup instructions.
+A short explanation of your approach and any trade-offs made.
+Documentation of unimplemented features.
+5. Time Expectation:
+Spend no more than half a day on this project. If you are short on time for all the
+deliverables or have more ideas but not enough time, feel free to document them
+instead of implementing everything.
+Resources
+Pokémon TCG API Documentation
+React Documentation
+Best of luck on your journey to Pokémon mastery! We’re excited to see how you tackle this
+challenge.
