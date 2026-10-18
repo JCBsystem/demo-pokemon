@@ -1,0 +1,23 @@
+name: Deploy to Firebase Hosting on merge
+on:
+  push:
+    branches:
+      - production
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          node-version: "24"
+          cache: true
+      - run: vp check
+      - run: vp test
+      - run: vp build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEST_POKEMON_A4EF7 }}
+          channelId: live
+          projectId: test-pokemon-a4ef7

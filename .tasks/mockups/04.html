@@ -1,0 +1,331 @@
+<!-- Views: phone bottom pill or laptop right-edge index tabs (or URL #home, #cards, #empty, #card); click any pocket for /card/:id; detail tabs are the Attacks / Weaknesses / Legalities buttons; "Show empty state" link sits under the /cards strip. -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>04 Binder</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  [hidden] { display:none !important; }
+  :root { --cover:#b8432c; --cover-dk:#8f3220; --paper:#fff8ec; --ink:#3a2a20; --muted:#8a7360; --sun:#f2b632; }
+  body { font-family:Nunito,system-ui,sans-serif; background:#f4e6cf; color:var(--ink); }
+  .display { font-family:Fredoka,Nunito,sans-serif; }
+  /* binder cover: stitched leather */
+  .cover { background:var(--cover); border-radius:26px; padding:10px; box-shadow:0 18px 40px -18px #6b2a1a, inset 0 0 0 4px var(--cover-dk); position:relative; }
+  .cover::before { content:""; position:absolute; inset:5px; border:2px dashed #f7c9a8aa; border-radius:22px; pointer-events:none; }
+  .page { background:var(--paper); border-radius:16px; padding:14px; position:relative;
+          background-image:radial-gradient(#e9dcc4 1px, transparent 1px); background-size:14px 14px; }
+  /* plastic pocket */
+  .pocket { position:relative; aspect-ratio:5/7; border-radius:8px; background:#efe3cc; box-shadow:inset 0 0 0 1px #d9c7a6, 0 1px 0 #fff; overflow:hidden; display:block; }
+  .pocket img { width:100%; height:100%; object-fit:cover; }
+  .pocket::after { content:""; position:absolute; inset:0; pointer-events:none;
+          background:linear-gradient(125deg, #ffffff66 0%, #ffffff11 28%, transparent 40%), linear-gradient(#ffffffaa,#ffffffaa) top/100% 3px no-repeat; }
+  .pocket.empty { background:transparent; box-shadow:inset 0 0 0 2px #e0cfae; border:0; }
+  .heart { position:absolute; right:5px; top:7px; z-index:2; width:26px; height:26px; border-radius:999px; background:#fff8ecdd; color:#c9b293; display:grid; place-items:center; font-size:14px; line-height:1; box-shadow:0 1px 3px #0003; }
+  .heart.on { color:#e0413a; }
+  .rings { display:none; }
+  @media (min-width:1024px) {
+    .rings { display:flex; position:absolute; left:50%; top:8%; bottom:8%; transform:translateX(-50%); flex-direction:column; justify-content:space-between; z-index:5; }
+    .rings span { width:30px; height:14px; border-radius:999px; background:linear-gradient(#e6e6e6,#9a9a9a); box-shadow:0 2px 3px #0005; }
+    .home-right { background:var(--paper); border-radius:16px; padding:18px; }
+    .home-right > .page { background:none; padding:0; }
+  }
+  .chip { display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:5px 11px; font-size:13px; font-weight:700; background:#fff; box-shadow:inset 0 0 0 1px #e3d3b6; white-space:nowrap; }
+  .chip b { color:var(--muted); font-weight:700; }
+  .dot { width:10px; height:10px; border-radius:999px; display:inline-block; flex:none; }
+  .t-Grass{background:#5aa84a}.t-Colorless{background:#cfc6b4}.t-Water{background:#3d8fd6}.t-Psychic{background:#a65fb8}.t-Fighting{background:#b5653a}.t-Lightning{background:#f2c230}.t-Fire{background:#e8603c}.t-Darkness{background:#3b3a48}.t-Metal{background:#8c96a3}.t-Dragon{background:#7a6a2e}.t-Fairy{background:#e58bb5}
+  .navon { background:var(--ink) !important; color:#fff !important; }
+  .idx a { writing-mode:vertical-rl; }
+  .idx a.navon { position:relative; left:8px; }
+  .tab.on { background:var(--ink); color:#fff; }
+  .snap { scroll-snap-type:x mandatory; scrollbar-width:none; }
+  .snap > * { scroll-snap-align:start; }
+  .snap::-webkit-scrollbar { display:none; }
+</style>
+</head>
+<body class="min-h-screen pb-28 lg:pb-10">
+
+<!-- warm header -->
+<header class="px-4 pt-5 pb-3 lg:px-10 lg:pt-7 max-w-[1080px] lg:max-w-[980px] mx-auto flex items-end justify-between gap-3">
+  <div>
+    <p class="text-xs font-extrabold uppercase tracking-widest text-[color:var(--cover)]">Ash's binder</p>
+    <h1 class="display text-2xl lg:text-3xl font-semibold leading-tight">Ash's Pokémon Card Collection</h1>
+  </div>
+  <p class="text-sm text-[color:var(--muted)] font-bold whitespace-nowrap">2,138 cards · 121 sets</p>
+</header>
+
+<main class="px-4 lg:pl-10 lg:pr-24 max-w-[1080px] lg:max-w-[980px] mx-auto">
+<div class="cover">
+
+  <!-- laptop: index tabs sticking out of the right edge -->
+  <nav class="idx hidden lg:flex flex-col gap-2 absolute left-full top-10 -ml-1" aria-label="Main">
+    <a href="#home" data-nav="home" class="display font-semibold text-sm rounded-r-xl px-3 py-5 bg-[color:var(--sun)] text-[color:var(--ink)] shadow">Home</a>
+    <a href="#cards" data-nav="cards" class="display font-semibold text-sm rounded-r-xl px-3 py-5 bg-[#7cc3b6] text-[color:var(--ink)] shadow">Cards</a>
+    <a href="#cards" data-search class="display font-semibold text-sm rounded-r-xl px-3 py-5 bg-[#9db7e8] text-[color:var(--ink)] shadow">Search</a>
+  </nav>
+
+  <!-- ================= HOME  / ================= -->
+  <section id="home" class="relative flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:gap-[22px]">
+    <div class="rings"><span></span><span></span><span></span><span></span></div>
+
+    <!-- right page on laptop: search + index. display:contents on phone so blocks interleave with favourites -->
+    <div class="home-right contents lg:flex lg:flex-col lg:gap-6 lg:col-start-2 lg:row-start-1">
+      <div class="page order-1">
+        <label class="flex items-center gap-2 rounded-full bg-white px-4 py-3 shadow-[inset_0_0_0_2px_#ead9bb]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-[color:var(--muted)]"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="quick" class="flex-1 bg-transparent outline-none font-semibold placeholder:text-[color:var(--muted)]" placeholder="Search Ash's cards">
+        </label>
+        <div class="mt-3 flex items-center justify-between">
+          <p class="text-xs font-extrabold uppercase tracking-wider text-[color:var(--muted)]">Recent searches</p>
+          <button class="text-xs font-bold text-[color:var(--cover)]">Clear</button>
+        </div>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <a href="#cards" class="chip">pikachu</a><a href="#cards" class="chip">eevee</a><a href="#cards" class="chip">snorlax</a>
+          <a href="#cards" class="chip">riolu</a><a href="#cards" class="chip">drifloon</a><a href="#cards" class="chip">swsh5</a>
+        </div>
+        <p class="mt-2 text-[11px] text-[color:var(--muted)]">Your last 10 searches are kept.</p>
+      </div>
+
+      <div class="page order-3">
+        <h2 class="display text-lg font-semibold">Index</h2>
+        <details open class="mt-2 group">
+          <summary class="flex items-center justify-between cursor-pointer py-2 border-b-2 border-dashed border-[#e6d6b8]"><span class="display font-semibold"><span class="inline-block w-3 h-3 rounded-sm bg-[color:var(--sun)] mr-2"></span>Sets</span><b class="text-[color:var(--muted)]">121</b></summary>
+          <div class="flex flex-wrap gap-2 py-3">
+            <a href="#cards" class="chip">xy1 <b>49</b></a><a href="#cards" class="chip">sm1 <b>46</b></a><a href="#cards" class="chip">gym2 <b>46</b></a><a href="#cards" class="chip">g1 <b>46</b></a>
+            <a href="#cards" class="chip">swsh8 <b>45</b></a><a href="#cards" class="chip">dp1 <b>44</b></a><a href="#cards" class="chip">col1 <b>43</b></a><a href="#cards" class="chip">hgss1 <b>39</b></a>
+            <a href="#cards" class="chip !bg-transparent">All 121 sets →</a>
+          </div>
+        </details>
+        <details open>
+          <summary class="flex items-center justify-between cursor-pointer py-2 border-b-2 border-dashed border-[#e6d6b8]"><span class="display font-semibold"><span class="inline-block w-3 h-3 rounded-sm bg-[#7cc3b6] mr-2"></span>Types</span><b class="text-[color:var(--muted)]">11</b></summary>
+          <div class="flex flex-wrap gap-2 py-3">
+            <a href="#cards" class="chip"><i class="dot t-Grass"></i>Grass <b>213</b></a><a href="#cards" class="chip"><i class="dot t-Colorless"></i>Colorless <b>201</b></a>
+            <a href="#cards" class="chip"><i class="dot t-Water"></i>Water <b>193</b></a><a href="#cards" class="chip"><i class="dot t-Psychic"></i>Psychic <b>174</b></a>
+            <a href="#cards" class="chip"><i class="dot t-Fighting"></i>Fighting <b>166</b></a><a href="#cards" class="chip"><i class="dot t-Lightning"></i>Lightning <b>130</b></a>
+            <a href="#cards" class="chip"><i class="dot t-Fire"></i>Fire <b>91</b></a><a href="#cards" class="chip"><i class="dot t-Darkness"></i>Darkness <b>70</b></a>
+            <a href="#cards" class="chip"><i class="dot t-Metal"></i>Metal <b>52</b></a><a href="#cards" class="chip"><i class="dot t-Dragon"></i>Dragon <b>18</b></a>
+            <a href="#cards" class="chip"><i class="dot t-Fairy"></i>Fairy <b>13</b></a>
+          </div>
+        </details>
+        <details open>
+          <summary class="flex items-center justify-between cursor-pointer py-2 border-b-2 border-dashed border-[#e6d6b8]"><span class="display font-semibold"><span class="inline-block w-3 h-3 rounded-sm bg-[#9db7e8] mr-2"></span>Rarities</span><b class="text-[color:var(--muted)]">8</b></summary>
+          <div class="flex flex-wrap gap-2 py-3">
+            <a href="#cards" class="chip">Common <b>1176</b></a><a href="#cards" class="chip">Uncommon <b>803</b></a><a href="#cards" class="chip">Rare <b>106</b></a>
+            <a href="#cards" class="chip">Rare Holo <b>18</b></a><a href="#cards" class="chip">Promo <b>10</b></a><a href="#cards" class="chip">Rare Secret <b>5</b></a>
+            <a href="#cards" class="chip">Rare Rainbow <b>5</b></a><a href="#cards" class="chip">Rare Shiny <b>3</b></a>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- left page on laptop: page 1 = favourites -->
+    <div class="page order-2 lg:col-start-1 lg:row-start-1">
+      <div class="flex items-baseline justify-between mb-3">
+        <h2 class="display text-lg font-semibold">Page 1 · Favourites</h2>
+        <span class="text-xs font-bold text-[color:var(--muted)]">6 pinned</span>
+      </div>
+      <div class="grid grid-cols-3 gap-2.5">
+        <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/sm11/56.png" alt="Pikachu"><button class="heart on" aria-label="Unfavourite">&#9829;</button></a>
+        <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/bw5/84.png" alt="Eevee"><button class="heart on" aria-label="Unfavourite">&#9829;</button></a>
+        <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/pl2/81.png" alt="Snorlax"><button class="heart on" aria-label="Unfavourite">&#9829;</button></a>
+        <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh10tg/TG08.png" alt="Kleavor"><button class="heart on" aria-label="Unfavourite">&#9829;</button></a>
+        <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/dp7/SH1.png" alt="Drifloon"><button class="heart on" aria-label="Unfavourite">&#9829;</button></a>
+        <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh8/179.png" alt="Morpeko"><button class="heart on" aria-label="Unfavourite">&#9829;</button></a>
+        <div class="pocket empty grid place-items-center text-center text-[11px] font-bold text-[color:var(--muted)] p-2">Tap &#9829; on any card to pin it here</div>
+        <div class="pocket empty"></div><div class="pocket empty"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CARDS  /cards ================= -->
+  <section id="cards" hidden>
+    <!-- slim filter strip over the spread -->
+    <div class="relative mb-2.5 rounded-2xl bg-[#fff1dc] p-2 flex flex-wrap items-center gap-2">
+      <label class="flex-1 min-w-[160px] flex items-center gap-2 rounded-full bg-white px-3 py-2 shadow-[inset_0_0_0_2px_#ead9bb]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-[color:var(--muted)]"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" class="flex-1 min-w-0 bg-transparent outline-none font-semibold text-sm placeholder:text-[color:var(--muted)]" placeholder="Search by name">
+      </label>
+      <button data-sheet class="chip lg:hidden !bg-[color:var(--ink)] !text-white">Filters <span class="rounded-full bg-[color:var(--sun)] text-[color:var(--ink)] px-1.5 text-xs">4</span></button>
+      <button data-sheet class="chip hidden lg:inline-flex">Set ▾</button>
+      <button data-sheet class="chip hidden lg:inline-flex">Type ▾</button>
+      <button data-sheet class="chip hidden lg:inline-flex !bg-[color:var(--ink)] !text-white">Rarity · 4 ▾</button>
+
+      <!-- filter panel: bottom sheet on phone, dropdown under the strip on laptop -->
+      <div id="sheetbg" hidden class="fixed inset-0 bg-[#3a2a2066] z-40 lg:hidden" data-close></div>
+      <div id="sheet" hidden class="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-[color:var(--paper)] p-5 pb-6 shadow-2xl lg:absolute lg:inset-x-auto lg:bottom-auto lg:right-2 lg:top-full lg:mt-2 lg:w-[440px] lg:rounded-3xl">
+        <div class="mx-auto mb-3 h-1.5 w-10 rounded-full bg-[#dcc9a8] lg:hidden"></div>
+        <div class="flex justify-between items-center"><h3 class="display text-lg font-semibold">Filters</h3><button data-close class="text-sm font-bold text-[color:var(--muted)]">Close</button></div>
+        <p class="mt-3 text-xs font-extrabold uppercase tracking-wider text-[color:var(--muted)]">Set</p>
+        <div class="mt-2 flex flex-wrap gap-2"><span class="chip">xy1 <b>49</b></span><span class="chip">sm1 <b>46</b></span><span class="chip">gym2 <b>46</b></span><span class="chip">g1 <b>46</b></span><span class="chip">swsh8 <b>45</b></span><span class="chip !bg-transparent">+116 more</span></div>
+        <p class="mt-4 text-xs font-extrabold uppercase tracking-wider text-[color:var(--muted)]">Type</p>
+        <div class="mt-2 flex flex-wrap gap-2"><span class="chip"><i class="dot t-Grass"></i>Grass <b>213</b></span><span class="chip"><i class="dot t-Colorless"></i>Colorless <b>201</b></span><span class="chip"><i class="dot t-Water"></i>Water <b>193</b></span><span class="chip"><i class="dot t-Psychic"></i>Psychic <b>174</b></span><span class="chip !bg-transparent">+7 more</span></div>
+        <p class="mt-4 text-xs font-extrabold uppercase tracking-wider text-[color:var(--muted)]">Rarity</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          <span class="chip !bg-[color:var(--ink)] !text-white">✓ Common <b class="!text-[#e9d9bd]">1176</b></span><span class="chip !bg-[color:var(--ink)] !text-white">✓ Uncommon <b class="!text-[#e9d9bd]">803</b></span>
+          <span class="chip !bg-[color:var(--ink)] !text-white">✓ Rare <b class="!text-[#e9d9bd]">106</b></span><span class="chip">Rare Holo <b>18</b></span><span class="chip !bg-[color:var(--ink)] !text-white">✓ Promo <b class="!text-[#e9d9bd]">10</b></span>
+          <span class="chip">Rare Secret <b>5</b></span><span class="chip">Rare Rainbow <b>5</b></span><span class="chip">Rare Shiny <b>3</b></span>
+        </div>
+        <div class="mt-5 flex gap-3">
+          <button data-close class="flex-1 rounded-full py-3 font-extrabold shadow-[inset_0_0_0_2px_#dcc9a8]">Reset</button>
+          <button data-close class="flex-[2] rounded-full py-3 font-extrabold bg-[color:var(--cover)] text-white">View 2,095</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- active chips + count -->
+    <div class="mb-2.5 flex flex-wrap items-center gap-2 px-1">
+      <span id="count" class="display font-semibold text-white mr-1">2,095 cards</span>
+      <span data-chips class="contents">
+        <button class="chip">Common ✕</button><button class="chip">Uncommon ✕</button><button class="chip">Rare ✕</button><button class="chip">Promo ✕</button>
+        <button class="text-xs font-bold text-[#ffe4cf] underline">Clear all</button>
+      </span>
+      <a href="#empty" data-demo class="ml-auto text-xs font-bold text-[#ffe4cf] underline">Show empty state</a>
+    </div>
+
+    <!-- results: phone = one page, swipe sideways; laptop = two-page spread -->
+    <div id="results">
+      <div id="pages" class="snap flex overflow-x-auto gap-3 lg:grid lg:grid-cols-2 lg:gap-[22px] lg:overflow-visible relative">
+        <div class="rings"><span></span><span></span><span></span><span></span></div>
+        <div class="page min-w-full lg:min-w-0 grid grid-cols-3 gap-2.5">
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/pl3/129.png" alt="Starly"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh4/90.png" alt="Riolu"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh45/7.png" alt="Dartrix"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/xy1/52.png" alt="Whirlipede"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/bw10/45.png" alt="Golett"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh8/179.png" alt="Morpeko"><button class="heart on">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/dpp/DP14.png" alt="Chatot"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/dp7/59.png" alt="Duskull"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/bw7/5.png" alt="Tangela"><button class="heart">&#9829;</button></a>
+        </div>
+        <div class="page min-w-full lg:min-w-0 grid grid-cols-3 gap-2.5">
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/ex8/59.png" alt="Electrike"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh5/71.png" alt="Gligar"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh5/10.png" alt="Durant"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/swsh5/60.png" alt="Espurr"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/ex14/16.png" alt="Combusken"><button class="heart">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/dp7/SH1.png" alt="Drifloon"><button class="heart on">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/sm11/56.png" alt="Pikachu"><button class="heart on">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/bw5/84.png" alt="Eevee"><button class="heart on">&#9829;</button></a>
+          <a href="#card" class="pocket"><img loading="lazy" src="https://images.pokemontcg.io/pl2/81.png" alt="Snorlax"><button class="heart on">&#9829;</button></a>
+        </div>
+      </div>
+      <div class="mt-3 flex items-center justify-between text-white font-bold">
+        <button data-flip="-1" class="w-10 h-10 rounded-full bg-[#ffffff22] text-xl" aria-label="Previous page">‹</button>
+        <span><span id="pg" class="lg:hidden">Page 1</span><span class="hidden lg:inline">Pages 1–2</span> of 233</span>
+        <button data-flip="1" class="w-10 h-10 rounded-full bg-[#ffffff22] text-xl" aria-label="Next page">›</button>
+      </div>
+    </div>
+
+    <!-- empty state -->
+    <div id="noresults" hidden class="relative lg:grid lg:grid-cols-2 lg:gap-[22px]">
+      <div class="page grid grid-cols-3 gap-2.5 relative">
+        <div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div>
+        <div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div>
+        <div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div>
+        <div class="absolute inset-0 grid place-items-center p-6 text-center">
+          <div class="rounded-3xl bg-[color:var(--paper)] p-5 shadow-lg max-w-[280px]">
+            <p class="display text-xl font-semibold">No cards match "pikachoo"</p>
+            <p class="mt-1 text-sm text-[color:var(--muted)]">This page of the binder is empty. Check the spelling or clear the search.</p>
+            <a href="#cards" class="mt-4 inline-block rounded-full bg-[color:var(--cover)] text-white font-extrabold px-5 py-2.5">Clear search</a>
+          </div>
+        </div>
+      </div>
+      <div class="page hidden lg:grid grid-cols-3 gap-2.5"><div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div><div class="pocket empty"></div></div>
+    </div>
+  </section>
+
+  <!-- ================= DETAIL  /card/swsh8-179 ================= -->
+  <section id="card" hidden class="relative flex flex-col gap-3 lg:grid lg:grid-cols-2 lg:gap-[22px]">
+    <div class="rings"><span></span><span></span><span></span><span></span></div>
+    <div class="page">
+      <a href="#cards" class="text-sm font-bold text-[color:var(--cover)]">‹ Back to binder</a>
+      <div class="pocket mx-auto mt-3 max-w-[300px] lg:max-w-[340px] !rounded-2xl">
+        <img src="https://images.pokemontcg.io/swsh8/179_hires.png" alt="Morpeko">
+      </div>
+    </div>
+    <div class="page">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-xs font-extrabold tracking-wider text-[color:var(--muted)]">swsh8 · #179</p>
+          <h2 class="display text-3xl font-semibold">Morpeko</h2>
+        </div>
+        <button class="heart on !static !w-12 !h-12 !text-2xl" aria-label="Unfavourite" aria-pressed="true">&#9829;</button>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-2">
+        <span class="chip">HP <b>50</b></span><span class="chip"><i class="dot t-Darkness"></i>Darkness</span>
+        <span class="chip">Basic</span><span class="chip">Single Strike</span><span class="chip">Common</span><span class="chip">Illus. Teeziro</span>
+      </div>
+
+      <div class="mt-5 flex gap-1 rounded-full bg-[#f1e3c9] p-1" role="tablist">
+        <button class="tab on flex-1 rounded-full py-2 text-sm font-extrabold" data-tab="attacks">Attacks</button>
+        <button class="tab flex-1 rounded-full py-2 text-sm font-extrabold" data-tab="weaknesses">Weaknesses</button>
+        <button class="tab flex-1 rounded-full py-2 text-sm font-extrabold" data-tab="legalities">Legalities</button>
+      </div>
+
+      <div id="tab-attacks" class="mt-4">
+        <div class="rounded-2xl bg-white p-4 shadow-[inset_0_0_0_1px_#ead9bb]">
+          <div class="flex items-center gap-2">
+            <i class="dot t-Darkness !w-4 !h-4" title="Darkness"></i>
+            <p class="display font-semibold flex-1">Explosive Discontent</p>
+            <p class="display text-xl font-semibold">30×</p>
+          </div>
+          <p class="mt-2 text-sm text-[color:var(--muted)]">This attack does 30 damage for each damage counter on this Pokémon.</p>
+        </div>
+      </div>
+      <div id="tab-weaknesses" class="mt-4" hidden>
+        <div class="rounded-2xl bg-white p-4 shadow-[inset_0_0_0_1px_#ead9bb] flex items-center gap-3">
+          <i class="dot t-Grass !w-5 !h-5"></i><p class="display font-semibold flex-1">Grass</p><p class="display text-xl font-semibold">×2</p>
+        </div>
+      </div>
+      <div id="tab-legalities" class="mt-4 grid grid-cols-3 gap-2" hidden>
+        <div class="rounded-2xl bg-white p-3 text-center shadow-[inset_0_0_0_1px_#ead9bb]"><p class="text-xs font-extrabold uppercase text-[color:var(--muted)]">Standard</p><p class="mt-1 font-extrabold text-[#3f8f4a]">Legal</p></div>
+        <div class="rounded-2xl bg-white p-3 text-center shadow-[inset_0_0_0_1px_#ead9bb]"><p class="text-xs font-extrabold uppercase text-[color:var(--muted)]">Expanded</p><p class="mt-1 font-extrabold text-[#3f8f4a]">Legal</p></div>
+        <div class="rounded-2xl bg-white p-3 text-center shadow-[inset_0_0_0_1px_#ead9bb]"><p class="text-xs font-extrabold uppercase text-[color:var(--muted)]">Unlimited</p><p class="mt-1 font-extrabold text-[#3f8f4a]">Legal</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+
+<!-- phone: floating pill + detached search circle -->
+<nav class="lg:hidden fixed bottom-5 inset-x-0 z-30 flex justify-center gap-3" aria-label="Main">
+  <div class="flex gap-1 rounded-full bg-white p-1.5 shadow-[0_10px_30px_-8px_#6b2a1a88]">
+    <a href="#home" data-nav="home" class="rounded-full px-6 py-3 font-extrabold text-sm">Home</a>
+    <a href="#cards" data-nav="cards" class="rounded-full px-6 py-3 font-extrabold text-sm">Cards</a>
+  </div>
+  <a href="#cards" data-search aria-label="Search" class="grid place-items-center w-[58px] h-[58px] rounded-full bg-[color:var(--cover)] text-white shadow-[0_10px_30px_-8px_#6b2a1a]">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  </a>
+</nav>
+
+<script>
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+function route() {
+  const h = location.hash.slice(1) || 'home', v = h === 'empty' ? 'cards' : h;
+  ['home','cards','card'].forEach(id => $('#' + id).hidden = id !== v);
+  $('#results').hidden = h === 'empty'; $('#noresults').hidden = h !== 'empty';
+  $('[data-demo]').hidden = h === 'empty';
+  $('#count').textContent = h === 'empty' ? '0 cards' : '2,095 cards';
+  $('#q').value = h === 'empty' ? 'pikachoo' : '';
+  $$('[data-nav]').forEach(a => a.classList.toggle('navon', a.dataset.nav === v || (v === 'card' && a.dataset.nav === 'cards')));
+  scrollTo(0, 0);
+}
+addEventListener('hashchange', route); route();
+$$('[data-search]').forEach(a => a.addEventListener('click', () => setTimeout(() => $('#q').focus(), 50)));
+document.addEventListener('click', e => {
+  const t = e.target;
+  if (t.closest('.heart')) { e.preventDefault(); t.closest('.heart').classList.toggle('on'); }
+  if (t.closest('[data-sheet]')) { $('#sheet').hidden = $('#sheetbg').hidden = false; }
+  if (t.closest('[data-close]')) { $('#sheet').hidden = $('#sheetbg').hidden = true; }
+  const tab = t.closest('[data-tab]');
+  if (tab) { $$('[data-tab]').forEach(b => { b.classList.toggle('on', b === tab); $('#tab-' + b.dataset.tab).hidden = b !== tab; }); }
+  const f = t.closest('[data-flip]');
+  if (f) $('#pages').scrollBy({ left: f.dataset.flip * $('#pages').clientWidth, behavior: 'smooth' });
+});
+$('#pages').addEventListener('scroll', e => $('#pg').textContent = 'Page ' + (Math.round(e.target.scrollLeft / e.target.clientWidth) + 1));
+</script>
+</body>
+</html>

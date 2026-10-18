@@ -1,3 +1,21 @@
 {
-    "includeCoAuthoredBy": false
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": ["Bash(vp check)", "Bash(vp test)"]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "agent",
+            "if": "Bash(git commit *)",
+            "timeout": 600,
+            "prompt": "Commit gate. $ARGUMENTS\nIf tool_input.command is not a git commit, return {\"ok\": true}.\nElse run the Checks in .claude/skills/commit/SKILL.md from cwd, using the commit message from tool_input.command; return {\"ok\": true} or {\"ok\": false, \"reason\": \"<step>: <last lines>\"}. Do not commit, stage or edit."
+          }
+        ]
+      }
+    ]
+  }
 }

@@ -1,0 +1,399 @@
+[
+  {
+    "id": "base3-18",
+    "name": "Ditto",
+    "supertype": "Pokémon",
+    "subtypes": ["Basic"],
+    "level": "20",
+    "hp": "50",
+    "types": ["Colorless"],
+    "abilities": [
+      {
+        "name": "Transform",
+        "text": "If Ditto is your Active Pokémon, treat it as if it were the same card as the Defending Pokémon, including type, Hit Points, Weakness, and so on, except Ditto can't evolve, always has this Pokémon Power, and you may treat any Energy attached to Ditto as Energy of any type. Ditto isn't a copy of any other Pokémon while Ditto is Asleep, Confused, or Paralyzed.",
+        "type": "Pokémon Power"
+      }
+    ],
+    "weaknesses": [
+      {
+        "type": "Fighting",
+        "value": "×2"
+      }
+    ],
+    "resistances": [
+      {
+        "type": "Psychic",
+        "value": "-30"
+      }
+    ],
+    "retreatCost": ["Colorless"],
+    "convertedRetreatCost": 1,
+    "number": "18",
+    "artist": "Keiji Kinebuchi",
+    "rarity": "Rare",
+    "flavorText": "Capable of copying an enemy's genetic code to instantly transform itself into a duplicate of the enemy.",
+    "nationalPokedexNumbers": [132],
+    "legalities": {
+      "unlimited": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/base3/18.png",
+      "large": "https://images.pokemontcg.io/base3/18_hires.png"
+    }
+  },
+  {
+    "id": "base1-68",
+    "name": "Vulpix",
+    "supertype": "Pokémon",
+    "subtypes": ["Basic"],
+    "level": "11",
+    "hp": "50",
+    "types": ["Fire"],
+    "evolvesTo": ["Ninetales"],
+    "attacks": [
+      {
+        "name": "Confuse Ray",
+        "cost": ["Fire", "Fire"],
+        "convertedEnergyCost": 2,
+        "damage": "10",
+        "text": "Flip a coin. If heads, the Defending Pokémon is now Confused."
+      }
+    ],
+    "weaknesses": [
+      {
+        "type": "Water",
+        "value": "×2"
+      }
+    ],
+    "retreatCost": ["Colorless"],
+    "convertedRetreatCost": 1,
+    "number": "68",
+    "artist": "Ken Sugimori",
+    "rarity": "Common",
+    "flavorText": "At the time of birth, it has just one tail. Its tail splits from the tip as it grows older.",
+    "nationalPokedexNumbers": [37],
+    "legalities": {
+      "unlimited": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/base1/68.png",
+      "large": "https://images.pokemontcg.io/base1/68_hires.png"
+    }
+  },
+  {
+    "id": "base1-85",
+    "name": "Pokémon Center",
+    "supertype": "Trainer",
+    "rules": [
+      "Remove all damage counters from all of your own Pokémon with damage counters on them, then discard all Energy cards attached to those Pokémon."
+    ],
+    "number": "85",
+    "artist": "Keiji Kinebuchi",
+    "rarity": "Uncommon",
+    "legalities": {
+      "unlimited": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/base1/85.png",
+      "large": "https://images.pokemontcg.io/base1/85_hires.png"
+    }
+  },
+  {
+    "id": "dp6-140",
+    "name": "Azelf LV.X",
+    "supertype": "Pokémon",
+    "subtypes": ["Level-Up"],
+    "level": "X",
+    "hp": "90",
+    "types": ["Psychic"],
+    "evolvesFrom": "Azelf",
+    "rules": [
+      "Put this card onto your Active Azelf. Azelf LV.X can use any attack, Poké-Power, or Poké-Body from its previous level."
+    ],
+    "abilities": [
+      {
+        "name": "Psychic Aura",
+        "text": "Each of your Psychic Pokémon has no Weakness.",
+        "type": "Poké-Body"
+      }
+    ],
+    "attacks": [
+      {
+        "name": "Deep Balance",
+        "cost": ["Psychic"],
+        "convertedEnergyCost": 1,
+        "damage": "",
+        "text": "Choose 1 of your opponent's Pokémon. Put 1 damage counter on that Pokémon for each Energy attached to all of your opponent's Pokémon."
+      }
+    ],
+    "weaknesses": [
+      {
+        "type": "Psychic",
+        "value": "×2"
+      }
+    ],
+    "retreatCost": ["Colorless"],
+    "convertedRetreatCost": 1,
+    "number": "140",
+    "artist": "Shizurow",
+    "rarity": "Rare Holo LV.X",
+    "nationalPokedexNumbers": [482],
+    "legalities": {
+      "unlimited": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/dp6/140.png",
+      "large": "https://images.pokemontcg.io/dp6/140_hires.png"
+    }
+  },
+  {
+    "id": "ex15-56",
+    "name": "Nidoran ♀ δ",
+    "supertype": "Pokémon",
+    "subtypes": ["Basic"],
+    "hp": "40",
+    "types": ["Metal"],
+    "evolvesTo": ["Nidorina"],
+    "attacks": [
+      {
+        "name": "Tail Whip",
+        "cost": ["Colorless"],
+        "convertedEnergyCost": 1,
+        "damage": "",
+        "text": "Flip a coin. If heads, the Defending Pokémon can't attack during your opponent's next turn."
+      },
+      {
+        "name": "Scratch",
+        "cost": ["Colorless"],
+        "convertedEnergyCost": 1,
+        "damage": "10",
+        "text": ""
+      }
+    ],
+    "weaknesses": [
+      {
+        "type": "Psychic",
+        "value": "×2"
+      }
+    ],
+    "retreatCost": ["Colorless"],
+    "convertedRetreatCost": 1,
+    "number": "56",
+    "artist": "Hajime Kusajima",
+    "rarity": "Common",
+    "nationalPokedexNumbers": [29],
+    "legalities": {
+      "unlimited": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/ex15/56.png",
+      "large": "https://images.pokemontcg.io/ex15/56_hires.png"
+    }
+  },
+  {
+    "id": "xy6-28",
+    "name": "Natu",
+    "supertype": "Pokémon",
+    "subtypes": ["Basic"],
+    "hp": "40",
+    "types": ["Psychic"],
+    "evolvesTo": ["Xatu"],
+    "ancientTrait": {
+      "name": "Δ Plus",
+      "text": "If your opponent's Pokémon is Knocked Out by damage from an attack of this Pokémon, take 1 more Prize card."
+    },
+    "attacks": [
+      {
+        "name": "Psywave",
+        "cost": ["Psychic", "Colorless"],
+        "convertedEnergyCost": 2,
+        "damage": "10×",
+        "text": "This attack does 10 damage times the amount of Energy attached to your opponent's Active Pokémon."
+      }
+    ],
+    "weaknesses": [
+      {
+        "type": "Psychic",
+        "value": "×2"
+      }
+    ],
+    "retreatCost": ["Colorless"],
+    "convertedRetreatCost": 1,
+    "number": "28",
+    "artist": "Kagemaru Himeno",
+    "rarity": "Common",
+    "flavorText": "It usually forages for food on the ground but may, on rare occasions, hop onto branches to peck at shoots.",
+    "nationalPokedexNumbers": [177],
+    "legalities": {
+      "unlimited": "Legal",
+      "expanded": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/xy6/28.png",
+      "large": "https://images.pokemontcg.io/xy6/28_hires.png"
+    }
+  },
+  {
+    "id": "g1-RC15",
+    "name": "Meowstic",
+    "supertype": "Pokémon",
+    "subtypes": ["Stage 1"],
+    "hp": "90",
+    "types": ["Psychic"],
+    "evolvesFrom": "Espurr",
+    "attacks": [
+      {
+        "name": "Ear Influence",
+        "cost": ["Psychic"],
+        "convertedEnergyCost": 1,
+        "damage": "",
+        "text": "Move as many damage counters on your opponent's Pokémon as you like to any of your opponent's other Pokémon in any way you like."
+      },
+      {
+        "name": "Psychic",
+        "cost": ["Psychic", "Psychic", "Psychic"],
+        "convertedEnergyCost": 3,
+        "damage": "60+",
+        "text": "Does 10 more damage for each Energy attached to your opponent's Active Pokémon."
+      }
+    ],
+    "weaknesses": [
+      {
+        "type": "Psychic",
+        "value": "×2"
+      }
+    ],
+    "retreatCost": ["Colorless"],
+    "convertedRetreatCost": 1,
+    "number": "RC15",
+    "artist": "sui",
+    "rarity": "Uncommon",
+    "flavorText": "Intense silence. Two lamplights. Keep waiting for night to end.",
+    "nationalPokedexNumbers": [678],
+    "legalities": {
+      "unlimited": "Legal",
+      "expanded": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/g1/RC15.png",
+      "large": "https://images.pokemontcg.io/g1/RC15_hires.png"
+    }
+  },
+  {
+    "id": "swsh10tg-TG08",
+    "name": "Kleavor",
+    "supertype": "Pokémon",
+    "subtypes": ["Stage 1"],
+    "hp": "140",
+    "types": ["Fighting"],
+    "evolvesFrom": "Scyther",
+    "attacks": [
+      {
+        "name": "Timber Cleave",
+        "cost": ["Colorless", "Colorless"],
+        "convertedEnergyCost": 2,
+        "damage": "",
+        "text": "Flip 2 coins. If both of them are heads, your opponent's Active Pokémon is Knocked Out."
+      },
+      {
+        "name": "Berserker Tackle",
+        "cost": ["Fighting", "Fighting"],
+        "convertedEnergyCost": 2,
+        "damage": "120",
+        "text": "This Pokémon also does 30 damage to itself."
+      }
+    ],
+    "weaknesses": [
+      {
+        "type": "Grass",
+        "value": "×2"
+      }
+    ],
+    "retreatCost": ["Colorless", "Colorless"],
+    "convertedRetreatCost": 2,
+    "number": "TG08",
+    "artist": "Souichirou Gunjima",
+    "rarity": "Rare Holo",
+    "flavorText": "A violent creature that fells towering trees with its crude axes and shields itself with hard stone. If one should chance upon this Pokémon in the wilds, one's only recourse is to flee.",
+    "legalities": {
+      "unlimited": "Legal",
+      "standard": "Legal",
+      "expanded": "Legal"
+    },
+    "regulationMark": "F",
+    "images": {
+      "small": "https://images.pokemontcg.io/swsh10tg/TG08.png",
+      "large": "https://images.pokemontcg.io/swsh10tg/TG08_hires.png"
+    }
+  },
+  {
+    "id": "base1-100",
+    "name": "Lightning Energy",
+    "supertype": "Energy",
+    "subtypes": ["Basic"],
+    "number": "100",
+    "artist": "Keiji Kinebuchi",
+    "rarity": "Common",
+    "legalities": {
+      "unlimited": "Legal",
+      "standard": "Legal",
+      "expanded": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/base1/100.png",
+      "large": "https://images.pokemontcg.io/base1/100_hires.png"
+    }
+  },
+  {
+    "id": "base1-100",
+    "name": "Lightning Energy",
+    "supertype": "Energy",
+    "subtypes": ["Basic"],
+    "number": "100",
+    "artist": "Keiji Kinebuchi",
+    "rarity": "Common",
+    "legalities": {
+      "unlimited": "Legal",
+      "standard": "Legal",
+      "expanded": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/base1/100.png",
+      "large": "https://images.pokemontcg.io/base1/100_hires.png"
+    }
+  },
+  {
+    "id": "base1-100",
+    "name": "Lightning Energy",
+    "supertype": "Energy",
+    "subtypes": ["Basic"],
+    "number": "100",
+    "artist": "Keiji Kinebuchi",
+    "rarity": "Common",
+    "legalities": {
+      "unlimited": "Legal",
+      "standard": "Legal",
+      "expanded": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/base1/100.png",
+      "large": "https://images.pokemontcg.io/base1/100_hires.png"
+    }
+  },
+  {
+    "id": "tk2b-11",
+    "name": "Fire Energy",
+    "supertype": "Energy",
+    "subtypes": ["Basic"],
+    "number": "10",
+    "legalities": {
+      "unlimited": "Legal",
+      "standard": "Legal",
+      "expanded": "Legal"
+    },
+    "images": {
+      "small": "https://images.pokemontcg.io/tk2b/11.png",
+      "large": "https://images.pokemontcg.io/tk2b/11_hires.png"
+    }
+  }
+]

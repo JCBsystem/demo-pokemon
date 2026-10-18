@@ -1,0 +1,356 @@
+<!-- Views via hash: Home #/ · Grid #/cards · Empty state #/cards?q=zzz · Detail #/card/sm11-56 (tabs Attacks / Weaknesses / Legalities are buttons in the detail); resize to 390 px for drawer (menu button) and full-screen filter sheet (Filters button on #/cards). -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collector's Index</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background:#f6f5f2; }
+  .row-sel { background:#eef0ff; }
+  .tab-on { color:#18181b; border-color:#4f46e5; }
+  .sub-on { background:#18181b; color:#fff; }
+</style>
+</head>
+<body class="text-zinc-800 text-sm antialiased">
+
+<div class="lg:grid lg:grid-cols-[232px_minmax(0,1fr)_360px] min-h-screen" id="shell">
+
+  <!-- LEFT SIDEBAR (laptop) -->
+  <aside class="hidden lg:block border-r border-zinc-200 bg-white h-screen sticky top-0 overflow-y-auto">
+    <div class="px-4 py-4 font-semibold tracking-tight">Ash's Index</div>
+    <div data-nav class="px-2"></div>
+    <div data-facets class="px-2 pb-6"></div>
+  </aside>
+
+  <!-- CENTRE -->
+  <main class="min-w-0 flex flex-col" id="centre">
+    <!-- App bar -->
+    <header class="sticky top-0 z-20 bg-white/95 backdrop-blur border-b border-zinc-200 flex items-center gap-2 px-3 h-14">
+      <button class="lg:hidden p-2 -ml-1 rounded hover:bg-zinc-100" aria-label="Open menu" onclick="drawer(true)">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+      </button>
+      <form class="flex-1 min-w-0" onsubmit="event.preventDefault(); doSearch(this.q.value)">
+        <label class="flex items-center gap-2 h-9 px-3 rounded-md bg-zinc-100 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" class="text-zinc-400 shrink-0"><circle cx="9" cy="9" r="6"/><path d="m14 14 4 4"/></svg>
+          <input name="q" id="q" class="bg-transparent outline-none w-full placeholder:text-zinc-400" placeholder="Search 2,138 cards by name" autocomplete="off">
+        </label>
+      </form>
+      <button id="filterBtn" class="lg:hidden h-9 px-3 rounded-md border border-zinc-300 text-xs font-medium" onclick="sheet(true)">Filters</button>
+    </header>
+
+    <!-- HOME -->
+    <section data-view="home" class="p-4 lg:p-6 space-y-8 max-w-3xl">
+      <div>
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Favourites <span id="favCount" class="font-mono"></span></h2>
+        <ul id="favList" class="bg-white border border-zinc-200 rounded-lg divide-y divide-zinc-100"></ul>
+      </div>
+      <div>
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Recent searches <span class="normal-case tracking-normal font-normal text-zinc-400">· last 10</span></h2>
+        <ul id="recentList" class="bg-white border border-zinc-200 rounded-lg divide-y divide-zinc-100"></ul>
+      </div>
+      <div>
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Browse</h2>
+        <div id="browse" class="grid sm:grid-cols-3 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- CARDS -->
+    <section data-view="cards" class="flex-1">
+      <div class="px-3 lg:px-4 pt-3 pb-2 space-y-2 border-b border-zinc-200 bg-white">
+        <div class="flex items-baseline justify-between">
+          <h1 class="font-semibold">Cards <span id="resCount" class="text-zinc-500 font-normal"></span></h1>
+          <span class="text-[11px] text-zinc-400">mockup sample · 19 of 2,138</span>
+        </div>
+        <div id="groupPills" class="flex gap-1.5 overflow-x-auto lg:hidden"></div>
+        <div id="chips" class="flex flex-wrap gap-1.5"></div>
+      </div>
+      <table class="w-full table-fixed">
+        <thead class="text-[11px] uppercase tracking-wider text-zinc-500 bg-zinc-50 border-b border-zinc-200">
+          <tr>
+            <th class="w-12 py-1.5"></th>
+            <th class="text-left font-medium">Name</th>
+            <th class="hidden sm:table-cell w-28 text-left font-medium">Set · No.</th>
+            <th class="hidden md:table-cell w-24 text-left font-medium">Type</th>
+            <th class="hidden xl:table-cell w-28 text-left font-medium">Rarity</th>
+            <th class="hidden sm:table-cell w-12 text-right font-medium">HP</th>
+            <th class="w-10"></th>
+          </tr>
+        </thead>
+        <tbody id="rows" class="divide-y divide-zinc-100 bg-white"></tbody>
+      </table>
+      <div id="empty" class="hidden px-6 py-16 text-center">
+        <p class="font-medium">No cards match</p>
+        <p class="text-zinc-500 mt-1" id="emptyWhy"></p>
+        <button class="mt-4 h-9 px-4 rounded-md bg-zinc-900 text-white text-xs font-medium" onclick="clearAll()">Clear search and filters</button>
+      </div>
+    </section>
+
+    <!-- DETAIL (route on its own) -->
+    <section data-view="card" class="p-3 lg:p-6">
+      <a href="#/cards" class="inline-block text-xs text-zinc-500 hover:text-zinc-900 mb-3">← Cards</a>
+      <div id="detailFull" class="max-w-4xl"></div>
+    </section>
+  </main>
+
+  <!-- RIGHT PREVIEW (laptop, /cards only) -->
+  <aside id="previewPane" class="hidden border-l border-zinc-200 bg-white h-screen sticky top-0 overflow-y-auto">
+    <div class="flex items-center justify-between px-4 h-14 border-b border-zinc-200">
+      <span class="text-xs uppercase tracking-wider text-zinc-500">Preview</span>
+      <a id="openFull" class="text-xs font-medium text-indigo-600 hover:underline" href="#">Open ↗</a>
+    </div>
+    <div id="detailPreview" class="p-4"></div>
+  </aside>
+</div>
+
+<!-- DRAWER (phone) -->
+<div id="drawer" class="fixed inset-0 z-40 hidden lg:hidden">
+  <div class="absolute inset-0 bg-black/30" onclick="drawer(false)"></div>
+  <nav class="absolute left-0 top-0 bottom-0 w-[280px] bg-white overflow-y-auto shadow-xl">
+    <div class="flex items-center justify-between px-4 h-14 border-b border-zinc-200">
+      <span class="font-semibold tracking-tight">Ash's Index</span>
+      <button class="p-2 text-zinc-500" onclick="drawer(false)" aria-label="Close menu">✕</button>
+    </div>
+    <div data-nav class="px-2 pt-2"></div>
+    <div data-facets class="px-2 pb-6"></div>
+  </nav>
+</div>
+
+<!-- FILTER SHEET (phone, full screen) -->
+<div id="sheet" class="fixed inset-0 z-50 bg-white hidden lg:hidden flex-col">
+  <div class="flex items-center justify-between px-4 h-14 border-b border-zinc-200 shrink-0">
+    <button class="text-zinc-500 text-xs" onclick="sheet(false)">Close</button>
+    <span class="font-semibold">Filters</span>
+    <button class="text-indigo-600 text-xs font-medium" onclick="F.set.clear();F.type.clear();F.rarity.clear();render()">Reset</button>
+  </div>
+  <div data-facets class="flex-1 overflow-y-auto px-2"></div>
+  <div class="p-3 border-t border-zinc-200 shrink-0">
+    <button id="sheetGo" class="w-full h-11 rounded-md bg-zinc-900 text-white font-medium" onclick="sheet(false)"></button>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+ {id:"sm11-56",name:"Pikachu",hp:"70",types:["Lightning"],subtypes:["Basic"],rarity:"Common",number:"56",artist:"Misa Tsutsui",attacks:[{name:"Tail Whap",cost:["Colorless"],damage:"10",text:""},{name:"Electric Ball",cost:["Lightning","Colorless","Colorless"],damage:"50",text:""}],weaknesses:[{type:"Fighting",value:"×2"}],resistances:[{type:"Metal",value:"-20"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",expanded:"Legal"},flavorText:"Its nature is to store up electricity. Forests where nests of Pikachu live are dangerous, since the trees are so often struck by lightning."},
+ {id:"pl2-81",name:"Snorlax",hp:"100",types:["Colorless"],subtypes:["Basic"],rarity:"Common",number:"81",artist:"Kouki Saitou",attacks:[{name:"Toss and Turn",cost:["Colorless","Colorless"],damage:"20+",text:"If Snorlax is Asleep, this attack does 20 damage plus 30 more damage. (This attack can be used even if Snorlax is Asleep.)"},{name:"Heavy Press",cost:["Colorless","Colorless","Colorless","Colorless"],damage:"40+",text:"Flip a coin. If heads, this attack does 40 damage plus 40 more damage. If tails, Snorlax is now Asleep."}],weaknesses:[{type:"Fighting",value:"+20"}],retreatCost:["Colorless","Colorless","Colorless","Colorless"],legalities:{unlimited:"Legal"}},
+ {id:"bw5-84",name:"Eevee",hp:"50",types:["Colorless"],subtypes:["Basic"],rarity:"Common",number:"84",artist:"Sumiyoshi Kizuki",attacks:[{name:"Smash Kick",cost:["Colorless"],damage:"10",text:""},{name:"Tail Whap",cost:["Colorless","Colorless"],damage:"20",text:""}],weaknesses:[{type:"Fighting",value:"×2"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",expanded:"Legal"},flavorText:"Because its genetic makeup is irregular, it quickly changes its form due to a variety of causes."},
+ {id:"swsh10tg-TG08",name:"Kleavor",hp:"140",types:["Fighting"],subtypes:["Stage 1"],rarity:"Rare Holo",number:"TG08",artist:"Souichirou Gunjima",attacks:[{name:"Timber Cleave",cost:["Colorless","Colorless"],damage:"",text:"Flip 2 coins. If both of them are heads, your opponent's Active Pokémon is Knocked Out."},{name:"Berserker Tackle",cost:["Fighting","Fighting"],damage:"120",text:"This Pokémon also does 30 damage to itself."}],weaknesses:[{type:"Grass",value:"×2"}],retreatCost:["Colorless","Colorless"],legalities:{unlimited:"Legal",standard:"Legal",expanded:"Legal"}},
+ {id:"swsh8-179",name:"Morpeko",hp:"50",types:["Darkness"],subtypes:["Basic","Single Strike"],rarity:"Common",number:"179",artist:"Teeziro",attacks:[{name:"Explosive Discontent",cost:["Darkness"],damage:"30×",text:"This attack does 30 damage for each damage counter on this Pokémon."}],weaknesses:[{type:"Grass",value:"×2"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",standard:"Legal",expanded:"Legal"}},
+ {id:"pl3-129",name:"Starly",hp:"50",types:["Colorless"],subtypes:["Basic"],rarity:"Common",number:"129",artist:"Mitsuhiro Arita",attacks:[{name:"Peck",cost:["Colorless","Colorless"],damage:"20",text:""}],weaknesses:[{type:"Lightning",value:"+10"}],resistances:[{type:"Fighting",value:"-20"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal"}},
+ {id:"swsh4-90",name:"Riolu",hp:"70",types:["Fighting"],subtypes:["Basic"],rarity:"Common",number:"90",artist:"ryoma uratsuka",attacks:[{name:"Best Punch",cost:["Colorless"],damage:"30",text:"Flip a coin. If tails, this attack does nothing."}],weaknesses:[{type:"Psychic",value:"×2"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",standard:"Legal",expanded:"Legal"}},
+ {id:"swsh45-7",name:"Dartrix",hp:"80",types:["Grass"],subtypes:["Stage 1"],rarity:"Uncommon",number:"7",artist:"AKIRA EGAWA",attacks:[{name:"Razor Leaf",cost:["Grass"],damage:"40",text:""}],weaknesses:[{type:"Fire",value:"×2"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",standard:"Legal",expanded:"Legal"}},
+ {id:"xy1-52",name:"Whirlipede",hp:"90",types:["Psychic"],subtypes:["Stage 1"],rarity:"Uncommon",number:"52",artist:"Kagemaru Himeno",attacks:[{name:"Continuous Tumble",cost:["Psychic","Colorless"],damage:"30×",text:"Flip a coin until you get tails. This attack does 30 damage times the number of heads."}],weaknesses:[{type:"Psychic",value:"×2"}],retreatCost:["Colorless","Colorless","Colorless"],legalities:{unlimited:"Legal",expanded:"Legal"}},
+ {id:"bw10-45",name:"Golett",hp:"80",types:["Psychic"],subtypes:["Basic"],rarity:"Common",number:"45",artist:"Midori Harada",attacks:[{name:"Beat",cost:["Colorless"],damage:"10",text:""},{name:"Mega Punch",cost:["Psychic","Psychic","Colorless"],damage:"50",text:""}],weaknesses:[{type:"Darkness",value:"×2"}],retreatCost:["Colorless","Colorless","Colorless"],legalities:{unlimited:"Legal",expanded:"Legal"}},
+ {id:"dpp-DP14",name:"Chatot",hp:"60",types:["Colorless"],subtypes:["Basic"],rarity:"Promo",number:"DP14",artist:"Masakazu Fukuda",attacks:[{name:"Me First",cost:["Colorless"],damage:"",text:"Draw a card."},{name:"Tone-Deaf",cost:["Colorless"],damage:"10",text:"Flip a coin. If heads, the Defending Pokémon is now Confused."}],weaknesses:[{type:"Lightning",value:"+10"}],resistances:[{type:"Fighting",value:"-20"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal"}},
+ {id:"dp7-59",name:"Duskull",hp:"50",types:["Psychic"],subtypes:["Basic"],rarity:"Common",number:"59",artist:"Kouki Saitou",attacks:[{name:"Silhouette",cost:["Psychic"],damage:"",text:"Put 1 damage counter on the Defending Pokémon. If the Defending Pokémon already has any damage counters on it, put 2 damage counters on that Pokémon instead."},{name:"Will-o'-the-wisp",cost:["Colorless","Colorless"],damage:"20",text:""}],weaknesses:[{type:"Darkness",value:"+10"}],resistances:[{type:"Colorless",value:"-20"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal"}},
+ {id:"bw7-5",name:"Tangela",hp:"80",types:["Grass"],subtypes:["Basic"],rarity:"Common",number:"5",artist:"MAHOU",attacks:[{name:"Nap",cost:["Grass"],damage:"",text:"Heal 30 damage from this Pokémon."},{name:"Vine Whip",cost:["Grass","Colorless","Colorless"],damage:"50",text:""}],weaknesses:[{type:"Fire",value:"×2"}],resistances:[{type:"Water",value:"-20"}],retreatCost:["Colorless","Colorless"],legalities:{unlimited:"Legal",expanded:"Legal"}},
+ {id:"ex8-59",name:"Electrike",hp:"50",types:["Lightning"],subtypes:["Basic"],rarity:"Common",number:"59",artist:"Naoyo Kimura",attacks:[{name:"High Voltage",cost:["Lightning"],damage:"",text:"Flip a coin. If heads, your opponent can't play Trainer cards from his or her hand during his or her next turn."},{name:"Gnaw",cost:["Colorless","Colorless"],damage:"20",text:""}],weaknesses:[{type:"Fighting",value:"×2"}],resistances:[{type:"Metal",value:"-30"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal"}},
+ {id:"swsh5-71",name:"Gligar",hp:"70",types:["Fighting"],subtypes:["Basic"],rarity:"Common",number:"71",artist:"Naoyo Kimura",attacks:[{name:"Slash",cost:["Colorless","Colorless"],damage:"30",text:""}],weaknesses:[{type:"Grass",value:"×2"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",standard:"Legal",expanded:"Legal"}},
+ {id:"swsh5-10",name:"Durant",hp:"90",types:["Grass"],subtypes:["Basic"],rarity:"Uncommon",number:"10",artist:"kodama",attacks:[{name:"Vise Grip",cost:["Grass"],damage:"20",text:""},{name:"Devour",cost:["Colorless","Colorless"],damage:"",text:"For each of your Durant in play, discard the top card of your opponent's deck."}],weaknesses:[{type:"Fire",value:"×2"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",standard:"Legal",expanded:"Legal"}},
+ {id:"swsh5-60",name:"Espurr",hp:"60",types:["Psychic"],subtypes:["Basic"],rarity:"Common",number:"60",artist:"Saya Tsuruta",attacks:[{name:"Focused Wish",cost:["Psychic","Colorless"],damage:"20+",text:"Flip a coin. If heads, this attack does 20 more damage."}],weaknesses:[{type:"Darkness",value:"×2"}],resistances:[{type:"Fighting",value:"-30"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal",standard:"Legal",expanded:"Legal"}},
+ {id:"ex14-16",name:"Combusken",hp:"80",types:["Fighting"],subtypes:["Stage 1"],rarity:"Rare",number:"16",artist:"Suwama Chiaki",attacks:[{name:"Focus Energy",cost:["Fighting"],damage:"",text:"During your next turn, Combusken's High Jump Kick attack's base damage is 70."},{name:"High Jump Kick",cost:["Fighting","Colorless"],damage:"30",text:""}],weaknesses:[{type:"Psychic",value:"×2"}],retreatCost:["Colorless"],legalities:{unlimited:"Legal"}},
+ {id:"dp7-SH1",name:"Drifloon",hp:"50",types:["Psychic"],subtypes:["Basic"],rarity:"Rare",number:"SH1",artist:"Atsuko Nishida",attacks:[{name:"Tackle",cost:["Colorless"],damage:"10",text:""},{name:"Big Explosion",cost:["Psychic","Colorless"],damage:"50",text:"Drifloon does 50 damage to itself."}],weaknesses:[{type:"Darkness",value:"+10"}],resistances:[{type:"Colorless",value:"-20"}],legalities:{unlimited:"Legal"}},
+];
+const img = (c, big) => `https://images.pokemontcg.io/${setOf(c)}/${c.number}${big ? '_hires' : ''}.png`;
+const setOf = c => c.id.split('-')[0];
+const byId = id => CARDS.find(c => c.id === id);
+
+// Real collection-wide facet counts
+const FACETS = {
+  set: { label: 'Sets', total: 121, items: [['xy1',49],['sm1',46],['gym2',46],['g1',46],['swsh8',45],['dp1',44],['col1',43],['hgss1',39]] },
+  type: { label: 'Types', total: 11, items: [['Grass',213],['Colorless',201],['Water',193],['Psychic',174],['Fighting',166],['Lightning',130],['Fire',91],['Darkness',70],['Metal',52],['Dragon',18],['Fairy',13]] },
+  rarity: { label: 'Rarities', total: 8, items: [['Common',1176],['Uncommon',803],['Rare',106],['Rare Holo',18],['Promo',10],['Rare Secret',5],['Rare Rainbow',5],['Rare Shiny',3]] },
+};
+const TYPE_HEX = { Grass:'#3f9d4a', Colorless:'#a8a29e', Water:'#2b8fd6', Psychic:'#a855c7', Fighting:'#b45f2a', Lightning:'#e5b400', Fire:'#e2552c', Darkness:'#3f3f46', Metal:'#7c8a99', Dragon:'#0f8f86', Fairy:'#e46aa6' };
+const dot = (t, s = 10) => `<span title="${t}" class="inline-block rounded-full shrink-0" style="width:${s}px;height:${s}px;background:${TYPE_HEX[t] || '#999'}"></span>`;
+
+// State (in-memory for the mockup)
+const F = { set: new Set(), type: new Set(), rarity: new Set() };
+let query = '';
+const favs = new Set(['sm11-56', 'pl2-81', 'bw5-84', 'swsh10tg-TG08']);
+let recent = ['pikachu', 'snorlax', 'eevee', 'gligar', 'drifloon', 'kleavor'];
+let selected = 'sm11-56';
+const isWide = () => matchMedia('(min-width:1024px)').matches;
+
+const star = (id, size = 'w-8 h-8') => `<button onclick="event.stopPropagation();toggleFav('${id}')" aria-label="Favourite" aria-pressed="${favs.has(id)}"
+  class="${size} inline-flex items-center justify-center rounded hover:bg-zinc-100 ${favs.has(id) ? 'text-amber-500' : 'text-zinc-300 hover:text-zinc-500'}">
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="${favs.has(id) ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.6"><path d="m10 2.5 2.3 4.8 5.2.7-3.8 3.6.9 5.2L10 14.3l-4.6 2.5.9-5.2L2.5 8l5.2-.7z"/></svg></button>`;
+function toggleFav(id) { favs.has(id) ? favs.delete(id) : favs.add(id); render(); }
+
+function results() {
+  const q = query.toLowerCase();
+  return CARDS.filter(c =>
+    (!q || c.name.toLowerCase().includes(q)) &&
+    (!F.set.size || F.set.has(setOf(c))) &&
+    (!F.type.size || c.types.some(t => F.type.has(t))) &&
+    (!F.rarity.size || F.rarity.has(c.rarity)));
+}
+
+function navHTML() {
+  const r = location.hash.startsWith('#/card') ? (location.hash.startsWith('#/cards') ? 'cards' : 'card') : 'home';
+  const item = (href, label, count, on) => `<a href="${href}" onclick="drawer(false)" class="flex items-center justify-between px-2 h-8 rounded-md ${on ? 'bg-zinc-100 font-medium text-zinc-900' : 'text-zinc-600 hover:bg-zinc-50'}">
+    <span>${label}</span><span class="font-mono text-xs text-zinc-400">${count}</span></a>`;
+  return item('#/', 'Home', '', r === 'home') + item('#/cards', 'All cards', '2,138', r !== 'home');
+}
+
+function facetsHTML() {
+  return Object.entries(FACETS).map(([k, f]) => `
+    <div class="mt-5">
+      <div class="flex items-center justify-between px-2 mb-1 text-[11px] uppercase tracking-wider text-zinc-500 font-semibold">
+        <span>${f.label}</span><span class="font-mono font-normal">${f.total}</span></div>
+      ${f.items.map(([v, n]) => {
+        const on = F[k].has(v);
+        return `<button onclick="toggleFacet('${k}','${v}')" class="w-full flex items-center gap-2 px-2 h-8 rounded-md text-left ${on ? 'bg-indigo-50 text-indigo-900' : 'hover:bg-zinc-50'}">
+          <span class="w-3.5 h-3.5 rounded-[3px] border flex items-center justify-center text-[10px] ${on ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-zinc-300'}">${on ? '✓' : ''}</span>
+          ${k === 'type' ? dot(v) : ''}<span class="flex-1 truncate ${k === 'set' ? 'font-mono text-xs' : ''}">${v}</span>
+          <span class="font-mono text-xs text-zinc-400">${n.toLocaleString('en')}</span></button>`;
+      }).join('')}
+      ${k === 'set' ? `<div class="px-2 pt-1 text-xs text-zinc-400">Show all 121 sets</div>` : ''}
+    </div>`).join('');
+}
+function toggleFacet(k, v) {
+  F[k].has(v) ? F[k].delete(v) : F[k].add(v);
+  if (!document.getElementById('sheet').classList.contains('flex')) { drawer(false); if (!location.hash.startsWith('#/cards')) return go('#/cards'); }
+  render();
+}
+
+function rowHTML(c) {
+  return `<tr onclick="openCard('${c.id}')" class="cursor-pointer hover:bg-zinc-50 ${isWide() && c.id === selected ? 'row-sel' : ''}">
+    <td class="py-1 pl-3"><img src="${img(c)}" alt="" loading="lazy" class="w-8 h-11 object-cover rounded-sm border border-zinc-200 bg-zinc-100"></td>
+    <td class="pl-2 truncate"><div class="font-medium truncate">${c.name}</div>
+      <div class="sm:hidden text-xs text-zinc-500 truncate flex items-center gap-1.5">${dot(c.types[0], 8)}<span class="font-mono">${setOf(c)} · ${c.number}</span> · ${c.rarity}</div></td>
+    <td class="hidden sm:table-cell font-mono text-xs text-zinc-600">${setOf(c)} · ${c.number}</td>
+    <td class="hidden md:table-cell"><span class="inline-flex items-center gap-1.5 text-xs">${c.types.map(t => dot(t)).join('')}${c.types.join(', ')}</span></td>
+    <td class="hidden xl:table-cell text-xs text-zinc-600">${c.rarity}</td>
+    <td class="hidden sm:table-cell text-right font-mono text-xs">${c.hp}</td>
+    <td class="text-center pr-1">${star(c.id)}</td></tr>`;
+}
+function openCard(id) { if (isWide()) { selected = id; render(); } else go('#/card/' + id); }
+
+// Detail: level 1 = Attacks / Weaknesses / Legalities; level 2 = one chip per attack (Attacks) or Weakness / Resistance / Retreat (Weaknesses)
+let tab = 'attacks', sub = 0;
+function setTab(t) { tab = t; sub = 0; render(); }
+function setSub(i) { sub = i; render(); }
+const statRow = (k, v) => `<div class="flex items-center justify-between py-2"><span class="text-zinc-500">${k}</span><span class="tabular-nums">${v}</span></div>`;
+function detailHTML(c, wide) {
+  const tabs = [['attacks', 'Attacks', c.attacks.length], ['weaknesses', 'Weaknesses', c.weaknesses.length], ['legalities', 'Legalities', 3]];
+  let subs = [], body = '';
+  if (tab === 'attacks') {
+    subs = c.attacks.map(a => a.name);
+    const a = c.attacks[sub] || c.attacks[0];
+    body = `<div class="flex items-center justify-between py-2"><span class="flex gap-1">${a.cost.map(t => dot(t, 14)).join('')}</span>
+      <span class="font-mono text-lg">${a.damage || '—'}</span></div>
+      <p class="text-zinc-600 leading-relaxed">${a.text || '<span class="text-zinc-400">No attack text.</span>'}</p>`;
+  } else if (tab === 'weaknesses') {
+    subs = ['Weakness', 'Resistance', 'Retreat'];
+    const list = sub === 0 ? c.weaknesses : sub === 1 ? (c.resistances || []) : null;
+    body = list ? (list.length ? list.map(w => statRow(`<span class="inline-flex items-center gap-2">${dot(w.type)}${w.type}</span>`, w.value)).join('') : `<p class="py-2 text-zinc-400">None.</p>`)
+      : statRow('Retreat cost', c.retreatCost ? `<span class="inline-flex gap-1">${c.retreatCost.map(t => dot(t, 12)).join('')}</span> ${c.retreatCost.length}` : '—');
+  } else {
+    body = ['unlimited', 'expanded', 'standard'].map(k => {
+      const v = c.legalities[k];
+      return statRow(k[0].toUpperCase() + k.slice(1), v ? `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-xs">${v}</span>` : `<span class="text-zinc-400 text-xs">Not listed</span>`);
+    }).join('');
+  }
+  return `<div class="${wide ? 'md:grid md:grid-cols-[300px_1fr] md:gap-8' : ''}">
+    <img src="${img(c, wide)}" alt="${c.name} card" class="${wide ? 'w-full max-w-[300px] mx-auto' : 'w-44 mx-auto'} rounded-xl shadow-md mb-4">
+    <div>
+      <div class="flex items-start justify-between gap-2">
+        <div><h2 class="${wide ? 'text-2xl' : 'text-lg'} font-semibold tracking-tight">${c.name}</h2>
+          <p class="text-xs text-zinc-500 mt-0.5"><span class="font-mono">${setOf(c)} · ${c.number}</span> · ${c.rarity} · ${c.subtypes.join(', ')}</p></div>
+        ${star(c.id, 'w-9 h-9 border border-zinc-200')}
+      </div>
+      <div class="mt-3 divide-y divide-zinc-100 border-y border-zinc-100 text-sm">
+        ${statRow('HP', c.hp)}
+        ${statRow('Type', `<span class="inline-flex items-center gap-1.5">${c.types.map(t => dot(t)).join('')}${c.types.join(', ')}</span>`)}
+        ${statRow('Artist', c.artist)}
+      </div>
+      <div class="mt-4 flex gap-4 border-b border-zinc-200">
+        ${tabs.map(([k, l, n]) => `<button onclick="setTab('${k}')" class="pb-2 -mb-px border-b-2 text-sm ${tab === k ? 'tab-on font-medium' : 'border-transparent text-zinc-500 hover:text-zinc-800'}">${l} <span class="font-mono text-xs text-zinc-400">${n}</span></button>`).join('')}
+      </div>
+      ${subs.length ? `<div class="flex flex-wrap gap-1.5 mt-3">${subs.map((s, i) => `<button onclick="setSub(${i})" class="px-2.5 h-7 rounded-full border border-zinc-200 text-xs ${i === sub ? 'sub-on' : 'hover:bg-zinc-50'}">${s}</button>`).join('')}</div>` : ''}
+      <div class="mt-2 divide-y divide-zinc-100">${body}</div>
+      ${c.flavorText && wide ? `<p class="mt-6 text-xs italic text-zinc-500 leading-relaxed">${c.flavorText}</p>` : ''}
+    </div></div>`;
+}
+
+function render() {
+  const h = location.hash || '#/';
+  const route = h.startsWith('#/cards') ? 'cards' : h.startsWith('#/card/') ? 'card' : 'home';
+  document.querySelectorAll('[data-view]').forEach(s => s.hidden = s.dataset.view !== route);
+  document.querySelectorAll('[data-nav]').forEach(n => n.innerHTML = navHTML());
+  document.querySelectorAll('[data-facets]').forEach(n => n.innerHTML = facetsHTML());
+  document.getElementById('filterBtn').classList.toggle('hidden', route !== 'cards');
+  const pane = document.getElementById('previewPane');
+  pane.classList.toggle('lg:block', route === 'cards');
+  document.getElementById('shell').classList.toggle('lg:grid-cols-[232px_minmax(0,1fr)_360px]', route === 'cards');
+  document.getElementById('shell').classList.toggle('lg:grid-cols-[232px_minmax(0,1fr)]', route !== 'cards');
+
+  // Home
+  const fl = [...favs].map(byId);
+  document.getElementById('favCount').textContent = fl.length;
+  document.getElementById('favList').innerHTML = fl.length ? fl.map(c => `<li class="flex items-center gap-3 pl-3 pr-1 h-12">
+      <img src="${img(c)}" alt="" class="w-6 h-8 object-cover rounded-sm border border-zinc-200">
+      <a href="#/card/${c.id}" class="flex-1 min-w-0 truncate"><span class="font-medium">${c.name}</span> <span class="font-mono text-xs text-zinc-400">${setOf(c)} · ${c.number}</span></a>
+      ${dot(c.types[0])}${star(c.id)}</li>`).join('')
+    : `<li class="px-3 py-4 text-zinc-500">No favourites yet. Star a card to pin it here.</li>`;
+  document.getElementById('recentList').innerHTML = recent.slice(0, 10).map(s => `<li><button onclick="doSearch('${s}')" class="w-full flex items-center gap-3 px-3 h-10 text-left hover:bg-zinc-50">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" class="text-zinc-400"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/></svg>${s}</button></li>`).join('');
+  document.getElementById('browse').innerHTML = Object.entries(FACETS).map(([k, f]) => `
+    <div class="bg-white border border-zinc-200 rounded-lg">
+      <div class="flex items-center justify-between px-3 h-10 border-b border-zinc-100"><span class="font-medium">${f.label}</span><span class="font-mono text-xs text-zinc-500">${f.total}</span></div>
+      <ul class="py-1">${f.items.slice(0, 4).map(([v, n]) => `<li><button onclick="F.${k}.clear();toggleFacet('${k}','${v}')" class="w-full flex items-center gap-2 px-3 h-8 hover:bg-zinc-50">
+        ${k === 'type' ? dot(v) : ''}<span class="flex-1 text-left ${k === 'set' ? 'font-mono text-xs' : ''}">${v}</span><span class="font-mono text-xs text-zinc-400">${n.toLocaleString('en')}</span></button></li>`).join('')}</ul>
+      <a href="#/cards" class="block px-3 h-9 leading-9 text-xs text-indigo-600 border-t border-zinc-100">All ${f.total} ${f.label.toLowerCase()} →</a>
+    </div>`).join('');
+
+  // Cards
+  const res = results();
+  document.getElementById('resCount').textContent = res.length + (res.length === 1 ? ' result' : ' results');
+  if (res.length && !res.some(c => c.id === selected)) selected = res[0].id;
+  document.getElementById('rows').innerHTML = res.map(rowHTML).join('');
+  document.getElementById('empty').classList.toggle('hidden', res.length > 0);
+  document.getElementById('emptyWhy').textContent = query ? `Nothing named “${query}” with these filters.` : 'Try removing a filter.';
+  document.getElementById('groupPills').innerHTML = Object.entries(FACETS).map(([k, f]) =>
+    `<button onclick="sheet(true)" class="shrink-0 h-7 px-2.5 rounded-full border text-xs ${F[k].size ? 'border-indigo-300 bg-indigo-50 text-indigo-800' : 'border-zinc-300 text-zinc-600'}">${f.label.replace(/ies$/, 'y').replace(/s$/, '')}${F[k].size ? ` <span class="font-mono">${F[k].size}</span>` : ''} ▾</button>`).join('');
+  const chips = [...(query ? [['q', query]] : []), ...['set', 'type', 'rarity'].flatMap(k => [...F[k]].map(v => [k, v]))];
+  document.getElementById('chips').innerHTML = chips.map(([k, v]) =>
+    `<span class="inline-flex items-center gap-1 h-6 pl-2 pr-1 rounded bg-zinc-100 text-xs"><span class="text-zinc-500">${k === 'q' ? 'Name' : k}:</span>${v}
+     <button onclick="removeChip('${k}','${v}')" class="w-4 h-4 rounded hover:bg-zinc-300 text-zinc-500" aria-label="Remove">×</button></span>`).join('')
+    + (chips.length > 1 ? `<button onclick="clearAll()" class="text-xs text-indigo-600 h-6 px-1">Clear all</button>` : '');
+  document.getElementById('sheetGo').textContent = `Show ${res.length} card${res.length === 1 ? '' : 's'}`;
+
+  // Preview + full detail
+  const sel = byId(selected);
+  document.getElementById('detailPreview').innerHTML = detailHTML(sel, false);
+  document.getElementById('openFull').href = '#/card/' + sel.id;
+  if (route === 'card') {
+    const c = byId(h.slice(7)) || CARDS[0];
+    document.getElementById('detailFull').innerHTML = detailHTML(c, true);
+  }
+  document.getElementById('q').value = query;
+}
+
+function go(h) { location.hash === h ? render() : (location.hash = h); }
+function doSearch(s) {
+  query = s.trim();
+  if (query) recent = [query, ...recent.filter(r => r !== query)].slice(0, 10);
+  go('#/cards' + (query ? '?q=' + encodeURIComponent(query) : ''));
+}
+function removeChip(k, v) { k === 'q' ? (query = '', go('#/cards')) : (F[k].delete(v), render()); }
+function clearAll() { query = ''; F.set.clear(); F.type.clear(); F.rarity.clear(); go('#/cards'); }
+function drawer(open) { document.getElementById('drawer').classList.toggle('hidden', !open); }
+function sheet(open) { const s = document.getElementById('sheet'); s.classList.toggle('hidden', !open); s.classList.toggle('flex', open); }
+
+addEventListener('hashchange', () => {
+  const m = location.hash.match(/^#\/cards\?q=(.*)$/);
+  if (m) query = decodeURIComponent(m[1]);
+  if (location.hash.startsWith('#/card/')) { tab = 'attacks'; sub = 0; }
+  scrollTo(0, 0); render();
+});
+addEventListener('resize', render);
+dispatchEvent(new HashChangeEvent('hashchange'));
+</script>
+</body>
+</html>
