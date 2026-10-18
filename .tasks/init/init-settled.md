@@ -1,7 +1,6 @@
-# Init settled: Ash's Pokémon Card Collection
+# Pre-planning: Ash's Pokémon Card Collection
 
-Result of the pre-planning review of `init-agent-feedback.md`.
-Same structure. Each item is either **Settled** or **Open** (open items point to section 3).
+Decisions made before planning. Details are decided in planning.
 
 ---
 
@@ -19,19 +18,15 @@ Build a small React + TypeScript web app where Ash can find any card in his coll
 6. Works on phone and laptop, usable from the keyboard, sensible loading and empty states.
 7. A public Git repo with a README: setup, approach and trade-offs, unimplemented features.
 8. A live URL (Firebase Hosting) or a video demo.
-
-### Beyond the minimum
-
-1. Recent searches persisted locally.
-2. Browse facets: sets, types, rarities, each with counts, each a filtered link into the grid. Set names: decided in detailed planning, not here.
-3. Zero layout shift: fixed card aspect ratio (images are 245x342, roughly 5:7) and skeletons that match the final layout.
-4. README section on how AI was used. Decided in detailed planning, not here.
+9. Recent searches persisted locally: last 10, Zustand persist (localStorage).
+10. Browse facets: sets, types, rarities, each with counts, each a filtered link into the grid. Content details (including set names) decided in detailed planning, not here.
+11. README section on how AI was used: a report written after each task is done, which feeds the README.
 
 ---
 
-## 2. Decisions per "we shall"
+## 2. Decisions
 
-### 2.1 Vite + vanilla React + TypeScript, strict mode
+### 2.1 Vite plus + vanilla React + TypeScript, strict mode
 
 **Settled.** React 19, Vite react plugin. Base tsconfig: `strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax`. No Next, no SSR, static files only.
 
@@ -41,13 +36,13 @@ Build a small React + TypeScript web app where Ash can find any card in his coll
 
 ### 2.3 UI research and 4 HTML mockups
 
-**Settled.** Research on Dribbble, Refero and Mobbin. MCPs to be installed by MrB before this step. Four mockups in distinct directions, each a single static HTML file with Tailwind from CDN.
+**Settled.** Research on Dribbble, Refero and Mobbin. Mobbin and Refero MCPs installed (local scope). Four mockups in distinct directions, each a single static HTML file with Tailwind from CDN.
 
 ### 2.4 Three agents: review, commit gate, test
 
 1. Review agent: **Settled.** Thin project agent in `.claude/agents/` wrapping `/code-review` and `pr-review-toolkit` with our standards.
 2. Commit gate: **Settled.** Claude Code agent hook (`type: "agent"`) on `PreToolUse`, matcher `Bash`, `if: "Bash(git commit *)"`, in `.claude/settings.json`. No shell script. Blocks the commit with a reason on failure. Only fires on commits made by Claude, so all commits go through Claude. Agent hooks are marked experimental in the docs.
-3. Test agent: **Settled.** Project agent plus `docs/testing-standards.md` (how to run unit and e2e, selector rules, fixtures). Selector rule: **Settled.** `getByTestId` first, `getByRole` second. A dedicated test-only CSS class (for example `.e2e-card-image`) allowed where an element cannot carry a test id. No Tailwind utility strings, CSS chains, text, or XPath selectors. Enforced by lint.
+3. Test agent: **Settled.** Project agent plus rule `.claude/rules/testing.md` with `paths: test/**` (how to run unit and e2e, selector rules, fixtures). A testing skill may come later. Selector rule: **Settled.** `getByTestId` first, `getByRole` second. A dedicated test-only CSS class (for example `.e2e-card-image`) allowed where an element cannot carry a test id. No Tailwind utility strings, CSS chains, text, or XPath selectors.
 
 ### 2.5 pnpm workspace monorepo
 
@@ -59,11 +54,11 @@ Build a small React + TypeScript web app where Ash can find any card in his coll
 
 ### 2.7 a11y
 
-**Settled.** React Aria for behaviour, `eslint-plugin-jsx-a11y` in lint, `@axe-core/playwright` check per page, `prefers-reduced-motion` respected by every animation.
+**Settled.** React Aria for behaviour, `eslint-plugin-jsx-a11y` in lint, `@axe-core/playwright` check per page, Full animation by default. Reduced motion: `<MotionConfig reducedMotion="user">` at root, one CSS rule for view transitions, Tailwind `motion-safe:`. No fade fallback.
 
 ### 2.8 Animated icons
 
-**Settled.** animate-ui icons (pulls in `motion`, confirm at setup). Candidate spots: favourite toggle, search field, empty state. Honour reduced motion.
+**Settled.** animate-ui icons (pulls in `motion`, confirm at setup). Candidate spots: favourite toggle, search field, empty state.
 
 ### 2.9 View Transition API and URL params
 
@@ -71,11 +66,11 @@ Build a small React + TypeScript web app where Ash can find any card in his coll
 
 ### 2.10 App feeling, no spinners, no layout shift
 
-**Settled.** Fixed aspect ratio image slots, skeletons matching final dimensions, grid virtualized or `content-visibility: auto`, filters update the URL without remount, designed error and empty states.
+**Settled.** Fixed aspect ratio image slots, skeletons matching final dimensions, filters update the URL without remount, designed error and empty states. Memo: long lists must stay smooth with 2000+ cards. Pick how when building; no extra library. For example, consider `content-visibility: auto` (CSS only).
 
 ### 2.11 Splash screen
 
-**Settled.** Splash shows only while data is actually pending, never a minimum display time. Animation decided after measuring first load with the optimized data (section 4.2).
+**Settled.** Splash shows only while data is actually pending, never a minimum display time. Animation decided after measuring first load with the optimized data (section 3.2).
 
 ### 2.12 TanStack Query, Zustand, Context
 
@@ -96,26 +91,13 @@ Build a small React + TypeScript web app where Ash can find any card in his coll
 
 ### 2.16 Playwright e2e, vitest unit
 
-**Settled.** Unit: schema parsing (good item, broken item skipped), filter and search selectors, favourites store. E2e: search to detail, filter link round trip through the URL, favourite survives reload, keyboard-only path through the grid, axe check per page, reinstall page. Selector rule enforced by lint.
+**Settled.** Playwright for e2e, vitest for unit. Which tests: decided when building. Memo, not decided, ideas from the previous agent: Unit: schema parsing (good item, broken item skipped), filter and search selectors, favourites store. E2e: search to detail, filter link round trip through the URL, favourite survives reload, keyboard-only path through the grid, axe check per page, reinstall page.
 
 ---
 
-## 3. Open questions
+## 3. Data source
 
-1. ~~Data source~~ **Settled, see section 4.**
-2. ~~Router~~ **Settled, see 2.9.** TanStack Router.
-3. ~~Production branch~~ **Settled, see 2.15.** `production` deploys, `main` is work.
-4. ~~Set names~~ **Deferred to detailed planning.** JSON has no set data, only the id prefix (for example `base3`).
-5. ~~README AI statement~~ **Deferred to detailed planning.**
-6. ~~Commit gate~~ **Settled, see 2.4.**
-7. ~~Weak selector rule~~ **Settled, see 2.4.3.** Test id first, role second, dedicated test class as fallback, nothing else.
-8. ~~Favourites storage~~ **Settled, see 2.12.**
-
----
-
-## 4. Data source
-
-### 4.1 API vs JSON
+### 3.1 API vs JSON
 
 **Settled.** Host the collection JSON ourselves on Firebase Hosting as static files, fetched via TanStack Query. No runtime dependency on the Pokémon TCG API.
 
@@ -128,7 +110,7 @@ Facts checked 2026-10-18:
 
 README notes a live store with subscription (for example Firestore) as the production approach if the collection were editable.
 
-### 4.2 File size and optimization
+### 3.2 File size and optimization
 
 | Version | Raw | Gzip |
 |---|---|---|
