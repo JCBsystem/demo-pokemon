@@ -4,5 +4,6 @@
   "projectId": "test-pokemon-a4ef7",
   "storageBucket": "test-pokemon-a4ef7.firebasestorage.app",
   "messagingSenderId": "834808246471",
-  "appId": "1:834808246471:web:687ba6b464121ab6588ee2"
+  "appId": "1:834808246471:web:687ba6b464121ab6588ee2",
+  "FYI": "Firebase web API keys are public identifiers, not secrets. They are shipped to every browser that loads the app and only tell the SDK which project to talk to. Access is controlled by Firebase security rules and App Check, not by hiding this key. See https://firebase.google.com/docs/projects/api-keys"
 }
