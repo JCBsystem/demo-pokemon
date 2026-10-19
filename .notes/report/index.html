@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ash's Collection: build report</title>
+    <meta
+      name="description"
+      content="Evaluation, time and the four build reports for Ash's Pokémon Card Collection."
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #fff;
+        --fg: #1a1a1a;
+        --muted: #666;
+        --line: #e3e3e3;
+        --accent: #1d4ed8;
+        --code: #f4f4f5;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #111;
+          --fg: #e8e8e8;
+          --muted: #999;
+          --line: #333;
+          --accent: #7aa2ff;
+          --code: #1c1c1e;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #111;
+        --fg: #e8e8e8;
+        --muted: #999;
+        --line: #333;
+        --accent: #7aa2ff;
+        --code: #1c1c1e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          16px/1.55 system-ui,
+          -apple-system,
+          Segoe UI,
+          sans-serif;
+      }
+      header {
+        border-bottom: 1px solid var(--line);
+        padding: 16px;
+      }
+      header h1 {
+        font-size: 18px;
+        margin: 0 0 10px;
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      nav a {
+        text-decoration: none;
+        color: var(--fg);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: 14px;
+      }
+      nav a[aria-current="page"] {
+        background: var(--fg);
+        color: var(--bg);
+        border-color: var(--fg);
+      }
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 16px 16px 64px;
+      }
+      main h1 {
+        font-size: 26px;
+      }
+      main h2 {
+        font-size: 20px;
+        margin-top: 2em;
+      }
+      main h3 {
+        font-size: 17px;
+      }
+      a {
+        color: var(--accent);
+        overflow-wrap: anywhere;
+      }
+      code {
+        background: var(--code);
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 0.9em;
+      }
+      pre {
+        background: var(--code);
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      pre code {
+        background: none;
+        padding: 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+        font-size: 14px;
+      }
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 6px 8px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: var(--code);
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Ash's Pokémon Card Collection: build report</h1>
+      <nav id="nav"></nav>
+    </header>
+    <main id="main"><p class="muted">Loading…</p></main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/15.0.12/marked.min.js"></script>
+    <script>
+      const pages = [
+        ["evaluation", "Evaluation", "evaluation.md"],
+        ["time", "Time", "time.md"],
+        ["status", "Status", "status.md"],
+        ["v1", "1 Pocket Grid", "reports/version-1.md"],
+        ["v2", "2 Collector's Index", "reports/version-2.md"],
+        ["v3", "3 Field Guide", "reports/version-3.md"],
+        ["v4", "4 Binder", "reports/version-4.md"],
+      ];
+      const nav = document.getElementById("nav"),
+        main = document.getElementById("main");
+      nav.innerHTML = pages
+        .map(([id, label]) => `<a href="#${id}" data-id="${id}">${label}</a>`)
+        .join("");
+      async function show() {
+        const id = location.hash.slice(1) || pages[0][0];
+        const page = pages.find((p) => p[0] === id) || pages[0];
+        for (const a of nav.children)
+          a.setAttribute("aria-current", a.dataset.id === page[0] ? "page" : "false");
+        const res = await fetch(page[2]);
+        main.innerHTML = res.ok
+          ? marked.parse(await res.text())
+          : `<p class="muted">Could not load ${page[2]} (${res.status}).</p>`;
+        document.title = `${page[1]} · Ash's Collection build report`;
+        window.scrollTo(0, 0);
+      }
+      addEventListener("hashchange", show);
+      show();
+    </script>
+  </body>
+</html>

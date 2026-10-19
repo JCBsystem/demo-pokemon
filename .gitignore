@@ -29,8 +29,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Private notes
-.notes/
 
 # Playwright MCP output
 .playwright-mcp/
