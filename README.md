@@ -16,7 +16,7 @@ all planning documents. The UI lives on the four version branches.
 
 ## Read first
 
-1. [Evaluation](.notes/evaluation.md): what the client asked for, what we set for ourselves,
+1. [Evaluation](.notes/evaluation.md): what the client asked for, what I set for myself,
    what was delivered, known issues, time.
 2. [Time log](.notes/time.md): 4.3 h at the keyboard against a half-day budget, plus 2.7 h of
    agents running on their own, stated separately.
@@ -100,18 +100,20 @@ Stack and the reasons:
 3. Route code splitting.
 4. Live deploy through the `production` branch. The GitHub Actions workflows exist
    (`.github/workflows/`); only 7-day preview channels have been deployed so far.
-5. A human pass in the Chrome extension. Reviewer walk-throughs used Playwright-driven
-   Chrome at 390 px and 1280 px with screenshots.
+5. A hands-on check in a real browser. The reviewer agents validated each version with
+   scripted Chrome at 390 px and 1280 px and screenshots; nobody has clicked through the
+   live previews by hand yet.
 6. Per-version gaps are listed in each build report under "Known gaps".
 
 ## AI usage
 
-AI did the typing. The decisions, constraints and quality bar are the author's.
+AI did the typing. The decisions, constraints and quality bar are mine.
 
-1. **What the author did**: wrote the pre-planning decisions, the action plan, the agent roles
-   and rules (`CLAUDE.md`, `.claude/`), chose the stack, data strategy and quality gates,
-   reviewed every report, and made every call the agents were not allowed to make. The first prompt, written before any agent ran, is in
-   [`.tasks/init/init.md`](.tasks/init/init.md) and quoted in the evaluation.
+1. **What I did**: wrote the pre-planning decisions, the action plan, the agent roles and
+   rules (`CLAUDE.md`, `.claude/`), chose the stack, data strategy and quality gates, reviewed
+   every report, and made every call the agents were not allowed to make. My first prompt,
+   written before any agent ran, is in [`.tasks/init/init.md`](.tasks/init/init.md) and quoted
+   in the evaluation.
 2. **What the agents did**: researched UI directions on Mobbin and Refero and drew the four
    HTML mockups in `.tasks/mockups/`; built the scaffold, data layer, tests, CI and the four
    apps; reviewed each other's work; wrote the build reports with measurements.
@@ -120,6 +122,6 @@ AI did the typing. The decisions, constraints and quality bar are the author's.
    agent per build that rejects with reasons and never fixes; agents could only touch the
    paths their group owned and had to stop and ask on anything not settled.
 4. **Disclosure**: the visual design came from agent research and agent-built mockups within
-   the author's constraints. It is not hand-drawn by the author.
+   my constraints. I did not draw it by hand.
 5. **Tools**: Claude Code with Claude Fable (managers, reviewers) and Claude Opus (workers).
    No AI attribution appears in commits or code by rule.
